@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema
+        xmlns="http://dwarfeng.com/schema/dwarfeng-datamark"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:tool="http://www.springframework.org/schema/tool"
+        targetNamespace="http://dwarfeng.com/schema/dwarfeng-datamark"
+        elementFormDefault="qualified"
+>
+
+    <xsd:import
+            namespace="http://www.springframework.org/schema/tool"
+            schemaLocation="https://www.springframework.org/schema/tool/spring-tool.xsd"
+    />
+
+    <xsd:annotation>
+        <xsd:documentation><![CDATA[DwArFeng dwarfeng-datamark 项目的命名空间支持。]]></xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="handler">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[通过该元素配置项目的数据标记处理器。]]></xsd:documentation>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="com.dwarfeng.datamark.struct.DatamarkConfig$Builder"/>
+                    <tool:exports type="com.dwarfeng.datamark.struct.DatamarkConfig"/>
+                    <tool:exports type="com.dwarfeng.datamark.handler.DatamarkHandler"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="handler-name" type="xsd:token" default="datamarkHandler">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        <![CDATA[数据标记服务的 bean 名称，默认是 datamarkHandler。]]>
+                    </xsd:documentation>
+                    <xsd:appinfo>
+                        <tool:annotation>
+                            <tool:expected-type type="java.lang.String"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="resource-url" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        <![CDATA[资源的地址，可以为 Spring 支持的任何资源。
+                         如果对应的资源是只读的，调用 DatamarkHandler.update() 方法将会抛出异常。]]>
+                    </xsd:documentation>
+                    <xsd:appinfo>
+                        <tool:annotation>
+                            <tool:expected-type type="java.lang.String"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="resource-charset" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        <![CDATA[资源字符集，默认是 UTF-8，对于中文 windows 系统，可能需要把该值改成 GBK。]]>
+                    </xsd:documentation>
+                    <xsd:appinfo>
+                        <tool:annotation>
+                            <tool:expected-type type="java.lang.String"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="update-allowed" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        <![CDATA[是否允许数据标记服务执行更新方法。
+                        如果该值为 false，调用 DatamarkHandler.update() 方法将会抛出异常。]]>
+                    </xsd:documentation>
+                    <xsd:appinfo>
+                        <tool:annotation>
+                            <tool:expected-type type="java.lang.Boolean"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="qos">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[通过该元素配置项目的数据标记 qos 服务。]]></xsd:documentation>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="com.dwarfeng.datamark.handler.DatamarkQosHandler"/>
+                    <tool:exports type="com.dwarfeng.datamark.service.DatamarkQosService"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="handler-name" type="xsd:token" default="datamarkQosHandler">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        <![CDATA[数据标记 QoS 服务的 bean 名称，默认是 datamarkQosHandler。]]>
+                    </xsd:documentation>
+                    <xsd:appinfo>
+                        <tool:annotation>
+                            <tool:expected-type type="java.lang.String"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="service-name" type="xsd:token" default="datamarkQosService">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        <![CDATA[数据标记 QoS 服务的 bean 名称，默认是 datamarkQosService。]]>
+                    </xsd:documentation>
+                    <xsd:appinfo>
+                        <tool:annotation>
+                            <tool:expected-type type="java.lang.String"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

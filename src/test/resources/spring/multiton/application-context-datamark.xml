@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:datamark="http://dwarfeng.com/schema/dwarfeng-datamark"
+        xmlns="http://www.springframework.org/schema/beans"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://dwarfeng.com/schema/dwarfeng-datamark
+        http://dwarfeng.com/schema/dwarfeng-datamark/dwarfeng-datamark.xsd"
+>
+
+    <datamark:handler
+            handler-name="instance1"
+            resource-url="${datamark.instance1.resource_url}"
+            resource-charset="${datamark.instance1.resource_charset}"
+            update-allowed="${datamark.instance1.update_allowed}"
+    />
+    <datamark:handler
+            handler-name="instance2"
+            resource-url="${datamark.instance2.resource_url}"
+            resource-charset="${datamark.instance2.resource_charset}"
+            update-allowed="${datamark.instance2.update_allowed}"
+    />
+    <datamark:handler
+            handler-name="instance3"
+            resource-url="${datamark.instance3.resource_url}"
+            resource-charset="${datamark.instance3.resource_charset}"
+            update-allowed="${datamark.instance3.update_allowed}"
+    />
+
+    <datamark:qos/>
+</beans>
