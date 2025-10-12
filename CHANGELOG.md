@@ -4,6 +4,12 @@
 
 ### 功能构建
 
+- 优化 `docs/wiki` 目录结构。
+  - 将 `docs/wiki/en_US` 目录重命名为 `en-US`，以符合 rfc5646 规范。
+  - 将 `docs/wiki/zh_CN` 目录重命名为 `zh-CN`，以符合 rfc5646 规范。
+  - 更新 `docs/wiki/README.md` 中的链接指向。
+  - 更新 `README.md` 中的链接指向。
+
 - 依赖升级。
   - 增加依赖 `subgrade` 以规避漏洞，版本为 `1.6.0.a`。
   - 增加依赖 `spring-telqos` 以规避漏洞，版本为 `1.1.14.a`。
