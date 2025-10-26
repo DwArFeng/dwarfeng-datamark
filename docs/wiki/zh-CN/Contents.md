@@ -15,3 +15,7 @@
 ## 版本黑名单
 
 - [Version Blacklist](./VersionBlacklist.md) - 版本黑名单，列出了本项目的版本黑名单，请注意避免使用这些版本。
+
+## 功能说明
+
+- [Resource Support](./ResourceSupport.md) - 资源支持说明，详细介绍项目支持的资源类型和配置方法。
