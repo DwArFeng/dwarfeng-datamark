@@ -15,6 +15,6 @@
                 type="assignable" expression="com.dwarfeng.datamark.configuration.ServiceExceptionMapperConfiguration"
         />
     </context:component-scan>
-    <!--扫描aop增强所在的包。 -->
+    <!--扫描 aop 增强所在的包。 -->
     <context:component-scan base-package="com.dwarfeng.subgrade.sdk.interceptor.analyse"/>
 </beans>
