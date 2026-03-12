@@ -19,3 +19,7 @@
 ## 功能说明
 
 - [Resource Support](./ResourceSupport.md) - 资源支持说明，详细介绍项目支持的资源类型和配置方法。
+
+## 快速开始
+
+- [Quick Start](./QuickStart.md) - 快速开始，用最少的步骤体验 `dwarfeng-datamark` 的读取、刷新与更新能力。
