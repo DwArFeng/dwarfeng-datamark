@@ -134,7 +134,7 @@ public class DatamarkCommand extends CliCommand {
 
     private void handleListServices(
             Context context,
-            // 为了代码的可扩展性，此处不做简化
+            // 为了代码的可扩展性，此处不做简化。
             @SuppressWarnings("unused") CommandLine commandLine
     ) throws Exception {
         // 调用服务，获取所有处理器的名称。
