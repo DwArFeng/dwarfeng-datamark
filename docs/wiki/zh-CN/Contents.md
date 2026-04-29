@@ -11,6 +11,7 @@
 ## 项目打包、安装、使用
 
 - [Install by Source Code](./InstallBySourceCode.md) - 通过源码安装本项目。
+- [Usage Guide](./UsageGuide.md) - 使用指南，介绍本项目在真实工程中的配置、集成与运维方式。
 
 ## 版本黑名单
 
