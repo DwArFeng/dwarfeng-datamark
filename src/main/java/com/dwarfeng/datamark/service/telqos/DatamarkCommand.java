@@ -1,10 +1,11 @@
 package com.dwarfeng.datamark.service.telqos;
 
 import com.dwarfeng.datamark.service.DatamarkQosService;
-import com.dwarfeng.springtelqos.node.config.TelqosCommand;
+import com.dwarfeng.springtelqos.node.configuration.TelqosCommand;
 import com.dwarfeng.springtelqos.sdk.command.CliCommand;
-import com.dwarfeng.springtelqos.stack.command.Context;
-import com.dwarfeng.springtelqos.stack.exception.TelqosException;
+import com.dwarfeng.springtelqos.sdk.util.CliCommandUtil;
+import com.dwarfeng.springtelqos.stack.command.CommandDescriptor;
+import com.dwarfeng.springtelqos.stack.command.CommandExecutor;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.lang3.StringUtils;
@@ -17,14 +18,16 @@ import java.util.Objects;
 /**
  * 数据标记指令。
  *
- * <p>
- * 用于提供 <code>spring-telqos</code> 框架的指令注册。
- *
  * @author DwArFeng
  * @since 1.0.0
  */
 @TelqosCommand
 public class DatamarkCommand extends CliCommand {
+
+    @SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
+    private static final String IDENTITY = "datamark";
+
+    // region 指令选项
 
     private static final String COMMAND_OPTION_LIST_HANDLERS = "lh";
     private static final String COMMAND_OPTION_LIST_HANDLERS_LONG_OPT = "list-handlers";
@@ -34,7 +37,7 @@ public class DatamarkCommand extends CliCommand {
     private static final String COMMAND_OPTION_REFRESH = "refresh";
     private static final String COMMAND_OPTION_UPDATE = "update";
 
-    private static final String[] COMMAND_OPTION_ARRAY = {
+    private static final String[] COMMAND_OPTION_ARRAY = new String[]{
             COMMAND_OPTION_LIST_HANDLERS,
             COMMAND_OPTION_UPDATE_ALLOWED,
             COMMAND_OPTION_GET,
@@ -45,97 +48,93 @@ public class DatamarkCommand extends CliCommand {
     private static final String COMMAND_OPTION_HANDLER_NAME = "hn";
     private static final String COMMAND_OPTION_DATAMARK_VALUE = "dv";
 
-    @SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
-    private static final String IDENTITY = "datamark";
-    private static final String DESCRIPTION = "数据标记服务";
-
-    private static final String CMD_LINE_SYNTAX_LIST_SERVICES = IDENTITY + " " +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_LIST_HANDLERS);
-    private static final String CMD_LINE_SYNTAX_UPDATE_ALLOWED = IDENTITY + " " +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE_ALLOWED) + " [" +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]";
-    private static final String CMD_LINE_SYNTAX_GET = IDENTITY + " " +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_GET) + " [" +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]";
-    private static final String CMD_LINE_SYNTAX_REFRESH = IDENTITY + " " +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_REFRESH) + " [" +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]";
-    private static final String CMD_LINE_SYNTAX_UPDATE = IDENTITY + " " +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE) + " [" +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name] [" +
-            CommandUtil.concatOptionPrefix(COMMAND_OPTION_DATAMARK_VALUE) + " datamark-value]";
-
-    private static final String[] CMD_LINE_ARRAY = new String[]{
-            CMD_LINE_SYNTAX_LIST_SERVICES,
-            CMD_LINE_SYNTAX_UPDATE_ALLOWED,
-            CMD_LINE_SYNTAX_GET,
-            CMD_LINE_SYNTAX_REFRESH,
-            CMD_LINE_SYNTAX_UPDATE
-    };
-
-    private static final String CMD_LINE_SYNTAX = CommandUtil.syntax(CMD_LINE_ARRAY);
+    // endregion
 
     private final DatamarkQosService datamarkQosService;
 
     public DatamarkCommand(DatamarkQosService datamarkQosService) {
-        super(IDENTITY, DESCRIPTION, CMD_LINE_SYNTAX);
+        super(IDENTITY);
         this.datamarkQosService = datamarkQosService;
     }
 
     @Override
-    protected List<Option> buildOptions() {
+    protected DescriptionProvider provideDescriptionProvider() {
+        return ctx -> "数据标记服务";
+    }
+
+    @Override
+    protected CliSyntaxProvider provideCliSyntaxProvider() {
+        return this::cliSyntaxProvider;
+    }
+
+    private String cliSyntaxProvider(CommandDescriptor.Context context) throws Exception {
+        final String[] patterns = new String[]{
+                context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_LIST_HANDLERS),
+                context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE_ALLOWED) +
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]",
+                context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_GET) +
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]",
+                context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_REFRESH) +
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]",
+                context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE) +
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name] [" +
+                        CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_DATAMARK_VALUE) + " datamark-value]"
+        };
+        return CliCommandUtil.cliSyntax(patterns);
+    }
+
+    @Override
+    protected List<Option> provideOptions() {
         List<Option> list = new ArrayList<>();
         list.add(
                 Option.builder(COMMAND_OPTION_LIST_HANDLERS).longOpt(COMMAND_OPTION_LIST_HANDLERS_LONG_OPT)
-                        .desc("列出所有可用的数据标记处理器").build()
+                        .optionalArg(true).hasArg(false).desc("列出所有可用的数据标记处理器").build()
         );
         list.add(
                 Option.builder(COMMAND_OPTION_UPDATE_ALLOWED).longOpt(COMMAND_OPTION_UPDATE_ALLOWED_LONG_OPT)
-                        .desc("返回处理器是否允许更新").build()
+                        .optionalArg(true).hasArg(false).desc("返回处理器是否允许更新").build()
         );
-        list.add(Option.builder(COMMAND_OPTION_GET).desc("获取数据标记值").build());
-        list.add(Option.builder(COMMAND_OPTION_REFRESH).desc("刷新数据标记值").build());
-        list.add(Option.builder(COMMAND_OPTION_UPDATE).desc("更新数据标记值").build());
-        list.add(Option.builder(COMMAND_OPTION_HANDLER_NAME).desc("数据服务 ID").hasArg().type(String.class).build());
-        list.add(Option.builder(COMMAND_OPTION_DATAMARK_VALUE).desc("数据标记值").hasArg().type(String.class).build());
+        list.add(Option.builder(COMMAND_OPTION_GET).optionalArg(true).hasArg(false).desc("获取数据标记值").build());
+        list.add(Option.builder(COMMAND_OPTION_REFRESH).optionalArg(true).hasArg(false).desc("刷新数据标记值").build());
+        list.add(Option.builder(COMMAND_OPTION_UPDATE).optionalArg(true).hasArg(false).desc("更新数据标记值").build());
+        list.add(Option.builder(COMMAND_OPTION_HANDLER_NAME).hasArg(true).type(String.class).desc("数据服务 ID").build());
+        list.add(Option.builder(COMMAND_OPTION_DATAMARK_VALUE).hasArg(true).type(String.class).desc("数据标记值").build());
         return list;
     }
 
     @Override
-    protected void executeWithCmd(Context context, CommandLine commandLine) throws TelqosException {
-        try {
-            Pair<String, Integer> pair = CommandUtil.analyseCommand(commandLine, COMMAND_OPTION_ARRAY);
-            if (pair.getRight() != 1) {
-                context.sendMessage(CommandUtil.optionMismatchMessage(COMMAND_OPTION_ARRAY));
-                context.sendMessage(super.cmdLineSyntax);
-                return;
-            }
-            switch (pair.getLeft()) {
-                case COMMAND_OPTION_LIST_HANDLERS:
-                    handleListServices(context, commandLine);
-                    break;
-                case COMMAND_OPTION_UPDATE_ALLOWED:
-                    handleUpdateAllowed(context, commandLine);
-                    break;
-                case COMMAND_OPTION_GET:
-                    handleGet(context, commandLine);
-                    break;
-                case COMMAND_OPTION_REFRESH:
-                    handleRefresh(context, commandLine);
-                    break;
-                case COMMAND_OPTION_UPDATE:
-                    handleUpdate(context, commandLine);
-                    break;
-            }
-        } catch (Exception e) {
-            throw new TelqosException(e);
+    protected void executeWithCmd(CommandExecutor.Context context, CommandLine cmd) throws Exception {
+        Pair<String, Integer> pair = CliCommandUtil.analyseCommand(cmd, COMMAND_OPTION_ARRAY);
+        if (pair.getRight() != 1) {
+            context.sendMessage(CliCommandUtil.optionMismatchMessage(COMMAND_OPTION_ARRAY));
+            context.sendMessage(context.getCommandManual(context.getRuntimeIdentity()));
+            return;
+        }
+        switch (pair.getLeft()) {
+            case COMMAND_OPTION_LIST_HANDLERS:
+                handleListHandlers(context, cmd);
+                break;
+            case COMMAND_OPTION_UPDATE_ALLOWED:
+                handleUpdateAllowed(context, cmd);
+                break;
+            case COMMAND_OPTION_GET:
+                handleGet(context, cmd);
+                break;
+            case COMMAND_OPTION_REFRESH:
+                handleRefresh(context, cmd);
+                break;
+            case COMMAND_OPTION_UPDATE:
+                handleUpdate(context, cmd);
+                break;
+            default:
+                throw new IllegalStateException("不应该执行到此处, 请联系开发人员");
         }
     }
 
-    private void handleListServices(
-            Context context,
+    private void handleListHandlers(
+            CommandExecutor.Context context,
             // 为了代码的可扩展性，此处不做简化。
-            @SuppressWarnings("unused") CommandLine commandLine
+            @SuppressWarnings("unused") CommandLine cmd
     ) throws Exception {
         // 调用服务，获取所有处理器的名称。
         List<String> handlerNames = datamarkQosService.listHandlerNames();
@@ -144,23 +143,23 @@ public class DatamarkCommand extends CliCommand {
         context.sendMessage("可用的处理器名称: ");
         if (handlerNames.isEmpty()) {
             context.sendMessage("  (Empty)");
-        } else {
-            for (int i = 0; i < handlerNames.size(); i++) {
-                String handlerName = handlerNames.get(i);
-                context.sendMessage(String.format("  %3d: %s", i + 1, handlerName));
-            }
+            return;
+        }
+        for (int i = 0; i < handlerNames.size(); i++) {
+            String handlerName = handlerNames.get(i);
+            context.sendMessage(String.format("  %3d: %s", i + 1, handlerName));
         }
     }
 
-    private void handleUpdateAllowed(Context context, CommandLine commandLine) throws Exception {
+    private void handleUpdateAllowed(CommandExecutor.Context context, CommandLine cmd) throws Exception {
         // 交互标记。
         boolean interactiveFlag = false;
 
         // 确定 handlerName。
         String handlerName = null;
         // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (commandLine.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = commandLine.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
+        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
+            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
         }
         // 如果 handlerName 为 null，则使用交互式输入获取。
         if (Objects.isNull(handlerName)) {
@@ -178,15 +177,15 @@ public class DatamarkCommand extends CliCommand {
         context.sendMessage("处理器名称: " + handlerName + ", 允许更新: " + updateAllowed);
     }
 
-    private void handleGet(Context context, CommandLine commandLine) throws Exception {
+    private void handleGet(CommandExecutor.Context context, CommandLine cmd) throws Exception {
         // 交互标记。
         boolean interactiveFlag = false;
 
         // 确定 handlerName。
         String handlerName = null;
         // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (commandLine.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = commandLine.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
+        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
+            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
         }
         // 如果 handlerName 为 null，则使用交互式输入获取。
         if (Objects.isNull(handlerName)) {
@@ -204,15 +203,15 @@ public class DatamarkCommand extends CliCommand {
         context.sendMessage("处理器名称: " + handlerName + ", 数据标记值: " + datamark);
     }
 
-    private void handleRefresh(Context context, CommandLine commandLine) throws Exception {
+    private void handleRefresh(CommandExecutor.Context context, CommandLine cmd) throws Exception {
         // 交互标记。
         boolean interactiveFlag = false;
 
         // 确定 handlerName。
         String handlerName = null;
         // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (commandLine.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = commandLine.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
+        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
+            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
         }
         // 如果 handlerName 为 null，则使用交互式输入获取。
         if (Objects.isNull(handlerName)) {
@@ -231,15 +230,15 @@ public class DatamarkCommand extends CliCommand {
         context.sendMessage("处理器名称: " + handlerName + ", 刷新后的数据标记值: " + datamark);
     }
 
-    private void handleUpdate(Context context, CommandLine commandLine) throws Exception {
+    private void handleUpdate(CommandExecutor.Context context, CommandLine cmd) throws Exception {
         // 交互标记。
         boolean interactiveFlag = false;
 
         // 确定 handlerName。
         String handlerName = null;
         // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (commandLine.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = commandLine.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
+        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
+            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
         }
         // 如果 handlerName 为 null，则使用交互式输入获取。
         if (Objects.isNull(handlerName)) {
@@ -250,8 +249,8 @@ public class DatamarkCommand extends CliCommand {
         // 确定 datamark。
         String datamark = null;
         // 如果有 COMMAND_OPTION_DATAMARK_VALUE 选项，则直接获取 datamark。
-        if (commandLine.hasOption(COMMAND_OPTION_DATAMARK_VALUE)) {
-            datamark = StringUtils.trim((String) commandLine.getParsedOptionValue(COMMAND_OPTION_DATAMARK_VALUE));
+        if (cmd.hasOption(COMMAND_OPTION_DATAMARK_VALUE)) {
+            datamark = StringUtils.trim((String) cmd.getParsedOptionValue(COMMAND_OPTION_DATAMARK_VALUE));
         }
         // 如果 datamark 为 null，则使用交互式输入获取。
         if (Objects.isNull(datamark)) {
@@ -270,12 +269,12 @@ public class DatamarkCommand extends CliCommand {
         context.sendMessage("处理器名称: " + handlerName + ", 更新的数据标记值: " + datamark);
     }
 
-    private String interactiveGetHandlerName(Context context) throws Exception {
+    private String interactiveGetHandlerName(CommandExecutor.Context context) throws Exception {
         context.sendMessage("请输入数据标记处理器的名称:");
         return context.receiveMessage();
     }
 
-    private String interactiveGetDatamarkValue(Context context) throws Exception {
+    private String interactiveGetDatamarkValue(CommandExecutor.Context context) throws Exception {
         context.sendMessage("请输入新的数据标记值:");
         return context.receiveMessage();
     }
