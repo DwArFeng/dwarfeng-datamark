@@ -10,15 +10,18 @@
 >
 
     <!--扫描配置类所在的包。 -->
-    <context:component-scan base-package="com.dwarfeng.datamark.configuration" use-default-filters="false">
+    <context:component-scan base-package="com.dwarfeng.datamark.node.configuration" use-default-filters="false">
         <context:include-filter
-                type="assignable" expression="com.dwarfeng.datamark.configuration.ServiceExceptionMapperConfiguration"
+                type="assignable"
+                expression="com.dwarfeng.datamark.node.configuration.ServiceExceptionMapperConfiguration"
         />
         <context:include-filter
-                type="assignable" expression="com.dwarfeng.datamark.configuration.SingletonHandlerConfiguration"
+                type="assignable"
+                expression="com.dwarfeng.datamark.node.configuration.SingletonHandlerConfiguration"
         />
         <context:include-filter
-                type="assignable" expression="com.dwarfeng.datamark.configuration.SingletonQosConfiguration"
+                type="assignable"
+                expression="com.dwarfeng.datamark.node.configuration.SingletonQosConfiguration"
         />
     </context:component-scan>
     <!--扫描 aop 增强所在的包。 -->

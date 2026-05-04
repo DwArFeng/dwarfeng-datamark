@@ -1,6 +1,6 @@
 package com.dwarfeng.datamark.example;
 
-import com.dwarfeng.datamark.handler.DatamarkHandler;
+import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

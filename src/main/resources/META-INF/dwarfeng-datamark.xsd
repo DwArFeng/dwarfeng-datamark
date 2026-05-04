@@ -21,9 +21,9 @@
             <xsd:documentation><![CDATA[通过该元素配置项目的数据标记处理器。]]></xsd:documentation>
             <xsd:appinfo>
                 <tool:annotation>
-                    <tool:exports type="com.dwarfeng.datamark.struct.DatamarkConfig$Builder"/>
-                    <tool:exports type="com.dwarfeng.datamark.struct.DatamarkConfig"/>
-                    <tool:exports type="com.dwarfeng.datamark.handler.DatamarkHandler"/>
+                    <tool:exports type="com.dwarfeng.datamark.stack.struct.DatamarkConfig$Builder"/>
+                    <tool:exports type="com.dwarfeng.datamark.stack.struct.DatamarkConfig"/>
+                    <tool:exports type="com.dwarfeng.datamark.stack.handler.DatamarkHandler"/>
                 </tool:annotation>
             </xsd:appinfo>
         </xsd:annotation>
@@ -86,8 +86,8 @@
             <xsd:documentation><![CDATA[通过该元素配置项目的数据标记 qos 服务。]]></xsd:documentation>
             <xsd:appinfo>
                 <tool:annotation>
-                    <tool:exports type="com.dwarfeng.datamark.handler.DatamarkQosHandler"/>
-                    <tool:exports type="com.dwarfeng.datamark.service.DatamarkQosService"/>
+                    <tool:exports type="com.dwarfeng.datamark.stack.handler.DatamarkQosHandler"/>
+                    <tool:exports type="com.dwarfeng.datamark.stack.service.DatamarkQosService"/>
                 </tool:annotation>
             </xsd:appinfo>
         </xsd:annotation>

@@ -1,6 +1,6 @@
 package com.dwarfeng.datamark.example;
 
-import com.dwarfeng.datamark.service.DatamarkQosService;
+import com.dwarfeng.datamark.stack.service.DatamarkQosService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
