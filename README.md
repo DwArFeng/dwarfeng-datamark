@@ -17,6 +17,7 @@ Dwarfeng（赵扶风）的数据标记处理工具，基于 `subgrade` 项目，
 |--------------------------------------------------------------|---------------|
 | com.dwarfeng.datamark.example.MultitonHandlerProcessExample  | 多例模式处理器流程示例   |
 | com.dwarfeng.datamark.example.MultitonQosProcessExample      | 多例模式 QoS 流程示例 |
+| com.dwarfeng.datamark.api.integration.example.TelqosExample  | Telqos 基础启动示例 |
 | com.dwarfeng.datamark.example.SingletonHandlerProcessExample | 单例模式处理器流程示例   |
 | com.dwarfeng.datamark.example.SingletonQosProcessExample     | 单例模式 QoS 流程示例 |
 
@@ -67,7 +68,7 @@ wiki 为项目的开发人员为本项目编写的详细文档，包含不同语
 
 ## 如何使用
 
-1. 运行 `src/test` 下的 `Example` 以观察全部特性。
+1. 运行 `src/test` 下的 `Example` 以及 `com.dwarfeng.datamark.api.integration.example.TelqosExample` 以观察全部特性。
 2. 观察项目结构，将其中的配置运用到其它的 subgrade 项目中。
 
 ### 推荐的使用模式

@@ -71,9 +71,11 @@ buildNumber.properties
 #################
 ## Logger Files
 #################
-/logs/
+/dwarfeng-datamark-core/logs/
+/dwarfeng-datamark-api/logs/
 
 #################
 ## Configuration Files
 #################
-/conf/
+/dwarfeng-datamark-core/conf/
+/dwarfeng-datamark-api/conf/

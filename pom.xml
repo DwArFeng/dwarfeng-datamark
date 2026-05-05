@@ -12,6 +12,8 @@
     <artifactId>dwarfeng-datamark</artifactId>
     <version>2.0.0.a-SNAPSHOT</version>
 
+    <packaging>pom</packaging>
+
     <name>dwarfeng-datamark</name>
     <url>http://maven.apache.org</url>
 
@@ -366,102 +368,19 @@
                 <artifactId>javax.persistence-api</artifactId>
                 <version>${javax.persistence.version}</version>
             </dependency>
+            <!-- 程序自身组件 -->
+            <dependency>
+                <groupId>com.dwarfeng</groupId>
+                <artifactId>dwarfeng-datamark-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dwarfeng</groupId>
+                <artifactId>dwarfeng-datamark-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <!-- 实际使用的依赖列表 -->
-    <dependencies>
-        <!-- Findbugs 组件 -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
-        <!-- Apache 工具组件 -->
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <!-- 单元测试 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
-        <!-- 日志处理 -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <!-- Dutil 组件 -->
-        <dependency>
-            <groupId>com.dwarfeng</groupId>
-            <artifactId>dutil-basic</artifactId>
-        </dependency>
-        <!-- Subgrade 组件 -->
-        <dependency>
-            <groupId>com.dwarfeng</groupId>
-            <artifactId>subgrade-stack</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dwarfeng</groupId>
-            <artifactId>subgrade-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dwarfeng</groupId>
-            <artifactId>subgrade-impl</artifactId>
-        </dependency>
-        <!-- Spring-telqos 组件 -->
-        <dependency>
-            <groupId>com.dwarfeng</groupId>
-            <artifactId>spring-telqos-core</artifactId>
-        </dependency>
-        <!-- Javassist 组件 -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </dependency>
-        <!-- Javax.persistence 组件 -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-        </dependency>
-    </dependencies>
 
     <build>
         <!-- 声明插件的坐标 -->
@@ -480,28 +399,10 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <!-- 实际使用的插件列表 -->
-        <plugins>
-            <!-- Maven 测试插件，用于跳过测试。 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-        <!-- 资源目录 -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-        <!-- 测试资源目录 -->
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
     </build>
+
+    <modules>
+        <module>dwarfeng-datamark-core</module>
+        <module>dwarfeng-datamark-api</module>
+    </modules>
 </project>

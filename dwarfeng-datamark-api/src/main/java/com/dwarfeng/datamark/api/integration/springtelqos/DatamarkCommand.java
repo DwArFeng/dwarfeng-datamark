@@ -1,8 +1,8 @@
-package com.dwarfeng.datamark.impl.service.telqos;
+package com.dwarfeng.datamark.api.integration.springtelqos;
 
 import com.dwarfeng.datamark.stack.service.DatamarkQosService;
-import com.dwarfeng.springtelqos.node.configuration.TelqosCommand;
 import com.dwarfeng.springtelqos.sdk.command.CliCommand;
+import com.dwarfeng.springtelqos.sdk.configuration.TelqosCommand;
 import com.dwarfeng.springtelqos.sdk.util.CliCommandUtil;
 import com.dwarfeng.springtelqos.stack.command.CommandDescriptor;
 import com.dwarfeng.springtelqos.stack.command.CommandExecutor;
