@@ -16,6 +16,7 @@
 在项目的 `pom.xml` 中添加如下依赖：
 
 ```xml
+
 <dependency>
     <groupId>com.dwarfeng</groupId>
     <artifactId>dwarfeng-datamark</artifactId>
@@ -54,6 +55,7 @@
 如果需要使用 QoS（服务质量）服务，可以追加：
 
 ```xml
+
 <datamark:qos/>
 ```
 
@@ -64,7 +66,7 @@ QoS 服务的典型应用场景包括：
 ### 最小调用示例
 
 ```java
-import com.dwarfeng.datamark.handler.DatamarkHandler;
+import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @SuppressWarnings("UnnecessaryModifier")
@@ -170,15 +172,18 @@ public class UsageGuideQuickExample {
         http://www.springframework.org/schema/context/spring-context.xsd"
 >
 
-    <context:component-scan base-package="com.dwarfeng.datamark.configuration" use-default-filters="false">
+    <context:component-scan base-package="com.dwarfeng.datamark.node.configuration" use-default-filters="false">
         <context:include-filter
-                type="assignable" expression="com.dwarfeng.datamark.configuration.ServiceExceptionMapperConfiguration"
+                type="assignable"
+                expression="com.dwarfeng.datamark.node.configuration.ServiceExceptionMapperConfiguration"
         />
         <context:include-filter
-                type="assignable" expression="com.dwarfeng.datamark.configuration.SingletonHandlerConfiguration"
+                type="assignable"
+                expression="com.dwarfeng.datamark.node.configuration.SingletonHandlerConfiguration"
         />
         <context:include-filter
-                type="assignable" expression="com.dwarfeng.datamark.configuration.SingletonQosConfiguration"
+                type="assignable"
+                expression="com.dwarfeng.datamark.node.configuration.SingletonQosConfiguration"
         />
     </context:component-scan>
 </beans>
@@ -248,8 +253,8 @@ public class UsageGuideQuickExample {
 以下示例为脱敏后的最小实体片段，仅保留与数据标记相关内容：
 
 ```java
-import com.dwarfeng.datamark.bean.jpa.DatamarkEntityListener;
-import com.dwarfeng.datamark.bean.jpa.DatamarkField;
+import com.dwarfeng.datamark.sdk.jpa.DatamarkEntityListener;
+import com.dwarfeng.datamark.sdk.jpa.DatamarkField;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -269,7 +274,7 @@ public class HibernateFoobarNode {
     @DatamarkField(handlerName = "foobarNodeDatamarkHandler")
     @Column(
             name = "created_datamark",
-            length = com.dwarfeng.datamark.util.Constraints.LENGTH_DATAMARK_VALUE,
+            length = com.dwarfeng.datamark.sdk.util.Constraints.LENGTH_DATAMARK_VALUE,
             updatable = false
     )
     private String createdDatamark;
@@ -277,7 +282,7 @@ public class HibernateFoobarNode {
     @DatamarkField(handlerName = "foobarNodeDatamarkHandler")
     @Column(
             name = "modified_datamark",
-            length = com.dwarfeng.datamark.util.Constraints.LENGTH_DATAMARK_VALUE
+            length = com.dwarfeng.datamark.sdk.util.Constraints.LENGTH_DATAMARK_VALUE
     )
     private String modifiedDatamark;
 
@@ -386,12 +391,12 @@ OK
 # datamark.xxx.resource_charset=UTF-8
 # 数据标记服务是否允许更新。
 # datamark.xxx.update_allowed=true
-
+#
 #---------------------------------FoobarCategory----------------------------------------
 datamark.foobar_category.resource_url=file:conf/datamark/current-foobar-category.storage
 datamark.foobar_category.resource_charset=UTF-8
 datamark.foobar_category.update_allowed=true
-
+#
 #---------------------------------FoobarNode----------------------------------------
 datamark.foobar_node.resource_url=file:conf/datamark/current-foobar-node.storage
 datamark.foobar_node.resource_charset=UTF-8
