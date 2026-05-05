@@ -11,9 +11,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 数据标记指令。
@@ -27,7 +27,7 @@ public class DatamarkCommand extends CliCommand {
     @SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
     private static final String IDENTITY = "datamark";
 
-    // region 指令选项
+    // region 子指令选项
 
     private static final String COMMAND_OPTION_LIST_HANDLERS = "lh";
     private static final String COMMAND_OPTION_LIST_HANDLERS_LONG_OPT = "list-handlers";
@@ -45,8 +45,10 @@ public class DatamarkCommand extends CliCommand {
             COMMAND_OPTION_UPDATE
     };
 
-    private static final String COMMAND_OPTION_HANDLER_NAME = "hn";
-    private static final String COMMAND_OPTION_DATAMARK_VALUE = "dv";
+    private static final String COMMAND_SUB_OPTION_HANDLER_NAME = "hn";
+    private static final String COMMAND_SUB_OPTION_HANDLER_NAME_LONG_OPT = "handler-name";
+    private static final String COMMAND_SUB_OPTION_DATAMARK_VALUE = "dv";
+    private static final String COMMAND_SUB_OPTION_DATAMARK_VALUE_LONG_OPT = "datamark-value";
 
     // endregion
 
@@ -71,14 +73,14 @@ public class DatamarkCommand extends CliCommand {
         final String[] patterns = new String[]{
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_LIST_HANDLERS),
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE_ALLOWED) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]",
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name]",
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_GET) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]",
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name]",
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_REFRESH) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name]",
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name]",
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_HANDLER_NAME) + " handler-name] [" +
-                        CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_DATAMARK_VALUE) + " datamark-value]"
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name] [" +
+                        CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_DATAMARK_VALUE) + " datamark-value]"
         };
         return CliCommandUtil.cliSyntax(patterns);
     }
@@ -97,8 +99,14 @@ public class DatamarkCommand extends CliCommand {
         list.add(Option.builder(COMMAND_OPTION_GET).optionalArg(true).hasArg(false).desc("获取数据标记值").build());
         list.add(Option.builder(COMMAND_OPTION_REFRESH).optionalArg(true).hasArg(false).desc("刷新数据标记值").build());
         list.add(Option.builder(COMMAND_OPTION_UPDATE).optionalArg(true).hasArg(false).desc("更新数据标记值").build());
-        list.add(Option.builder(COMMAND_OPTION_HANDLER_NAME).hasArg(true).type(String.class).desc("数据服务 ID").build());
-        list.add(Option.builder(COMMAND_OPTION_DATAMARK_VALUE).hasArg(true).type(String.class).desc("数据标记值").build());
+        list.add(
+                Option.builder(COMMAND_SUB_OPTION_HANDLER_NAME).longOpt(COMMAND_SUB_OPTION_HANDLER_NAME_LONG_OPT)
+                        .hasArg(true).type(String.class).desc("处理器名称").build()
+        );
+        list.add(
+                Option.builder(COMMAND_SUB_OPTION_DATAMARK_VALUE).longOpt(COMMAND_SUB_OPTION_DATAMARK_VALUE_LONG_OPT)
+                        .hasArg(true).type(String.class).desc("数据标记值").build()
+        );
         return list;
     }
 
@@ -133,7 +141,6 @@ public class DatamarkCommand extends CliCommand {
 
     private void handleListHandlers(
             CommandExecutor.Context context,
-            // 为了代码的可扩展性，此处不做简化。
             @SuppressWarnings("unused") CommandLine cmd
     ) throws Exception {
         // 调用服务，获取所有处理器的名称。
@@ -146,136 +153,98 @@ public class DatamarkCommand extends CliCommand {
             return;
         }
         for (int i = 0; i < handlerNames.size(); i++) {
-            String handlerName = handlerNames.get(i);
-            context.sendMessage(String.format("  %3d: %s", i + 1, handlerName));
+            context.sendMessage(String.format("  %3d: %s", i + 1, handlerNames.get(i)));
         }
     }
 
     private void handleUpdateAllowed(CommandExecutor.Context context, CommandLine cmd) throws Exception {
-        // 交互标记。
-        boolean interactiveFlag = false;
-
-        // 确定 handlerName。
-        String handlerName = null;
-        // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
-        }
-        // 如果 handlerName 为 null，则使用交互式输入获取。
-        if (Objects.isNull(handlerName)) {
-            handlerName = interactiveGetHandlerName(context);
-            interactiveFlag = true;
-        }
+        // 获取处理器名称。
+        String handlerName = parseHandlerName(context, cmd);
 
         // 调用服务，获取服务是否允许更新。
         boolean updateAllowed = datamarkQosService.updateAllowed(handlerName);
 
-        // 信息输出。
-        if (interactiveFlag) {
-            context.sendMessage(StringUtils.EMPTY);
-        }
-        context.sendMessage("处理器名称: " + handlerName + ", 允许更新: " + updateAllowed);
+        // 输出结果。
+        context.sendMessage(
+                "处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 允许更新: " + updateAllowed
+        );
     }
 
     private void handleGet(CommandExecutor.Context context, CommandLine cmd) throws Exception {
-        // 交互标记。
-        boolean interactiveFlag = false;
-
-        // 确定 handlerName。
-        String handlerName = null;
-        // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
-        }
-        // 如果 handlerName 为 null，则使用交互式输入获取。
-        if (Objects.isNull(handlerName)) {
-            handlerName = interactiveGetHandlerName(context);
-            interactiveFlag = true;
-        }
+        // 获取处理器名称。
+        String handlerName = parseHandlerName(context, cmd);
 
         // 调用服务，获取数据标记值。
         String datamark = datamarkQosService.get(handlerName);
 
-        // 信息输出。
-        if (interactiveFlag) {
-            context.sendMessage(StringUtils.EMPTY);
-        }
-        context.sendMessage("处理器名称: " + handlerName + ", 数据标记值: " + datamark);
+        // 输出结果。
+        context.sendMessage("处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 数据标记值: " + datamark);
     }
 
     private void handleRefresh(CommandExecutor.Context context, CommandLine cmd) throws Exception {
-        // 交互标记。
-        boolean interactiveFlag = false;
-
-        // 确定 handlerName。
-        String handlerName = null;
-        // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
-        }
-        // 如果 handlerName 为 null，则使用交互式输入获取。
-        if (Objects.isNull(handlerName)) {
-            handlerName = interactiveGetHandlerName(context);
-            interactiveFlag = true;
-        }
+        // 获取处理器名称。
+        String handlerName = parseHandlerName(context, cmd);
 
         // 调用服务，获取数据标记值。
         String datamark = datamarkQosService.refresh(handlerName);
 
-        // 信息输出。
-        if (interactiveFlag) {
-            context.sendMessage(StringUtils.EMPTY);
-        }
+        // 输出结果。
         context.sendMessage("刷新成功!");
-        context.sendMessage("处理器名称: " + handlerName + ", 刷新后的数据标记值: " + datamark);
+        context.sendMessage(
+                "处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 刷新后的数据标记值: " + datamark
+        );
     }
 
     private void handleUpdate(CommandExecutor.Context context, CommandLine cmd) throws Exception {
-        // 交互标记。
-        boolean interactiveFlag = false;
+        // 获取处理器名称和数据标记值。
+        String handlerName = parseHandlerName(context, cmd);
+        String datamark = parseDatamarkValue(context, cmd);
 
-        // 确定 handlerName。
-        String handlerName = null;
-        // 如果有 COMMAND_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
-        if (cmd.hasOption(COMMAND_OPTION_HANDLER_NAME)) {
-            handlerName = cmd.getOptionValue(COMMAND_OPTION_HANDLER_NAME);
-        }
-        // 如果 handlerName 为 null，则使用交互式输入获取。
-        if (Objects.isNull(handlerName)) {
-            handlerName = interactiveGetHandlerName(context);
-            interactiveFlag = true;
-        }
-
-        // 确定 datamark。
-        String datamark = null;
-        // 如果有 COMMAND_OPTION_DATAMARK_VALUE 选项，则直接获取 datamark。
-        if (cmd.hasOption(COMMAND_OPTION_DATAMARK_VALUE)) {
-            datamark = StringUtils.trim((String) cmd.getParsedOptionValue(COMMAND_OPTION_DATAMARK_VALUE));
-        }
-        // 如果 datamark 为 null，则使用交互式输入获取。
-        if (Objects.isNull(datamark)) {
-            datamark = interactiveGetDatamarkValue(context);
-            interactiveFlag = true;
-        }
-
-        // 调用服务，获取数据标记值。
+        // 调用服务，更新数据标记值。
         datamark = datamarkQosService.update(handlerName, datamark);
 
-        // 信息输出。
-        if (interactiveFlag) {
-            context.sendMessage(StringUtils.EMPTY);
-        }
+        // 输出结果。
         context.sendMessage("更新成功!");
-        context.sendMessage("处理器名称: " + handlerName + ", 更新的数据标记值: " + datamark);
+        context.sendMessage(
+                "处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 更新的数据标记值: " + datamark
+        );
     }
 
-    private String interactiveGetHandlerName(CommandExecutor.Context context) throws Exception {
-        context.sendMessage("请输入数据标记处理器的名称:");
-        return context.receiveMessage();
+    private String parseHandlerName(CommandExecutor.Context context, CommandLine cmd) throws Exception {
+        // 如果有 COMMAND_SUB_OPTION_HANDLER_NAME 选项，则直接获取 handlerName。
+        if (cmd.hasOption(COMMAND_SUB_OPTION_HANDLER_NAME)) {
+            return StringUtils.trimToNull(cmd.getOptionValue(COMMAND_SUB_OPTION_HANDLER_NAME));
+        }
+
+        // 如果没有 COMMAND_SUB_OPTION_HANDLER_NAME 选项，则根据处理器数量决定行为。
+        List<String> handlerNames = datamarkQosService.listHandlerNames();
+        if (handlerNames.size() <= 1) {
+            return null;
+        }
+
+        // 多处理器场景下，先输出处理器列表，再交互式输入。
+        context.sendMessage("可用的处理器名称: ");
+        for (int i = 0; i < handlerNames.size(); i++) {
+            context.sendMessage(String.format("  %3d: %s", i + 1, handlerNames.get(i)));
+        }
+        context.sendMessage("请输入处理器名称:");
+        return StringUtils.trimToNull(context.receiveMessage());
     }
 
-    private String interactiveGetDatamarkValue(CommandExecutor.Context context) throws Exception {
+    private String parseDatamarkValue(CommandExecutor.Context context, CommandLine cmd) throws Exception {
+        if (cmd.hasOption(COMMAND_SUB_OPTION_DATAMARK_VALUE)) {
+            String datamarkValue = StringUtils.trim(
+                    (String) cmd.getParsedOptionValue(COMMAND_SUB_OPTION_DATAMARK_VALUE)
+            );
+            if (StringUtils.isNotEmpty(datamarkValue)) {
+                return datamarkValue;
+            }
+        }
         context.sendMessage("请输入新的数据标记值:");
         return context.receiveMessage();
+    }
+
+    private String normalizeHandlerNameForOutput(@Nullable String handlerName) {
+        return StringUtils.defaultIfBlank(handlerName, "<default>");
     }
 }

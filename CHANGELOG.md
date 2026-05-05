@@ -4,6 +4,9 @@
 
 ### 功能构建
 
+- 优化部分运维指令功能及代码结构。
+  - com.dwarfeng.datamark.api.integration.springtelqos.DatamarkCommand。
+
 - 重构项目模块。
   - 新增 `dwarfeng-datamark-core` 子模块，并迁移原有代码至该模块。
   - 新增 `dwarfeng-datamark-api` 子模块。
