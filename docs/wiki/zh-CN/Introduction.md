@@ -5,7 +5,7 @@ Dwarfeng（赵扶风）的数据标记处理工具，基于 `subgrade` 项目，
 ## 特性
 
 1. Subgrade 架构支持。
-2. 能够轻松地通过配置获取一个数据标记处理器，以获取当前的数据标记的值。
+2. 能够轻松地通过配置获取一个数据标记处理器，以获取当前的数据标记值。
 3. 数据标记基于 Spring Resource 进行加载。
 4. 提供标记刷新 API，可以重复读取 Spring Resource，并刷新数据标记。
 5. 提供标记更新 API，当 Spring Resource 支持写入时，可以更新数据标记。
@@ -13,12 +13,26 @@ Dwarfeng（赵扶风）的数据标记处理工具，基于 `subgrade` 项目，
 
 运行 `src/test` 下的示例以观察全部特性。
 
-| 示例类名                                                         | 说明            |
-|--------------------------------------------------------------|---------------|
-| com.dwarfeng.datamark.example.MultitonHandlerProcessExample  | 多例模式处理器流程示例   |
-| com.dwarfeng.datamark.example.MultitonQosProcessExample      | 多例模式 QoS 流程示例 |
-| com.dwarfeng.datamark.example.SingletonHandlerProcessExample | 单例模式处理器流程示例   |
-| com.dwarfeng.datamark.example.SingletonQosProcessExample     | 单例模式 QoS 流程示例 |
+| 示例类名                                                         | 模块                     | 说明            |
+|--------------------------------------------------------------|------------------------|---------------|
+| com.dwarfeng.datamark.example.MultitonHandlerProcessExample  | dwarfeng-datamark-core | 多例模式处理器流程示例   |
+| com.dwarfeng.datamark.example.MultitonQosProcessExample      | dwarfeng-datamark-core | 多例模式 QoS 流程示例 |
+| com.dwarfeng.datamark.api.integration.example.TelqosExample  | dwarfeng-datamark-api  | Telqos 基础启动示例 |
+| com.dwarfeng.datamark.example.SingletonHandlerProcessExample | dwarfeng-datamark-core | 单例模式处理器流程示例   |
+| com.dwarfeng.datamark.example.SingletonQosProcessExample     | dwarfeng-datamark-core | 单例模式 QoS 流程示例 |
+
+## 项目结构
+
+本项目采用 Maven 多模块结构，主要模块如下：
+
+1. `dwarfeng-datamark-core`：核心实现模块，包含 `impl` / `node` / `sdk` / `stack` 等包。
+2. `dwarfeng-datamark-api`：对外集成模块，包含 spring-telqos 集成命令及相关示例。
+
+其中，XML 命名空间扩展资源位于 `dwarfeng-datamark-core/src/main/resources/META-INF`：
+
+1. `spring.handlers`。
+2. `spring.schemas`。
+3. `dwarfeng-datamark.xsd`。
 
 ## 文档
 
@@ -67,18 +81,19 @@ wiki 为项目的开发人员为本项目编写的详细文档，包含不同语
 
 ## 如何使用
 
-1. 运行 `src/test` 下的 `Example` 以观察全部特性。
-2. 观察项目结构，将其中的配置运用到其它的 subgrade 项目中。
+1. 运行 `dwarfeng-datamark-core/src/test` 下的 `Example` 以及 `dwarfeng-datamark-api/src/test` 下的
+   `com.dwarfeng.datamark.api.integration.example.TelqosExample` 以观察全部特性。
+2. 观察项目结构，将其中的配置运用到其它 subgrade 项目中。
 
 ### 推荐的使用模式
 
 数据标记处理器的多例模式可以为不同类型的数据提供不同的数据标记处理器，在实际使用中可以细化数据标记的粒度。
 
-数据标记 QoS 可以对所有的数据标记处理器进行统一的管理，一般而言使用单例模式，
-除非有特殊需求（比如对不同的数据处理器隔离管理）。
+数据标记 QoS 可以对所有数据标记处理器进行统一管理，一般而言使用单例模式，
+除非有特殊需求（比如对不同数据处理器隔离管理）。
 
-- 数据标记处理器: 推荐使用多例模式，以细化数据标记的粒度。
-- 数据标记 QoS: 推荐使用单例模式，以统一管理所有的数据标记处理器。
+- 数据标记处理器: 推荐使用多例模式，以细化数据标记粒度。
+- 数据标记 QoS: 推荐使用单例模式，以统一管理所有数据标记处理器。
 
 基于上述原因，推荐使用项目提供的自定义 XML 命名空间进行便捷配置，示例如下：
 

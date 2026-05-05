@@ -4,6 +4,11 @@
 
 ### 功能构建
 
+- 更新 README.md。
+
+- Wiki 更新。
+  - docs/wiki/zh-CN/Introduction.md。
+
 - 优化部分运维指令功能及代码结构。
   - com.dwarfeng.datamark.api.integration.springtelqos.DatamarkCommand。
 
