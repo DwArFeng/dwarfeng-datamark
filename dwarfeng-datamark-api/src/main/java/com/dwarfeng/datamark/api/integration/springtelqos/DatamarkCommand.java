@@ -24,7 +24,7 @@ import java.util.List;
 @TelqosCommand
 public class DatamarkCommand extends CliCommand {
 
-    @SuppressWarnings({"SpellCheckingInspection", "RedundantSuppression"})
+    @SuppressWarnings({"SpellCheckingInspection", "GrazieInspectionRunner", "RedundantSuppression"})
     private static final String IDENTITY = "datamark";
 
     // region 子指令选项
