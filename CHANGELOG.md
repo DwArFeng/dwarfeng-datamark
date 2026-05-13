@@ -4,6 +4,9 @@
 
 ### 功能构建
 
+- Wiki 编写。
+  - docs/wiki/zh-CN/ConfigParameters.md。
+
 - 新增监听器解析器。
   - 新增 `com.dwarfeng.datamark.stack.resolve.ListenerResolver` 接口，实现监听器处理器名称解析。
   - 新增 `com.dwarfeng.datamark.impl.resolve.IntrinsicListenerResolver` 本征实现。

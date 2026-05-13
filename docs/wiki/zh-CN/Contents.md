@@ -25,3 +25,7 @@
 ## 快速开始
 
 - [Quick Start](./QuickStart.md) - 快速开始，用最少的步骤体验 `dwarfeng-datamark` 的读取、刷新与更新能力。
+
+## 配置
+
+- [Config Parameters](./ConfigParameters.md) - 配置参数详解，说明 FtpConfig 各配置项含义、默认值与校验规则。
