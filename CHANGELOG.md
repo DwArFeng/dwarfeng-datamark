@@ -4,7 +4,11 @@
 
 ### 功能构建
 
-- (无)
+- 新增监听器解析器。
+  - 新增 `com.dwarfeng.datamark.stack.resolve.ListenerResolver` 接口，实现监听器处理器名称解析。
+  - 新增 `com.dwarfeng.datamark.impl.resolve.IntrinsicListenerResolver` 本征实现。
+  - 调整 `com.dwarfeng.datamark.sdk.jpa.DatamarkEntityListener` 的内部实现，以应用相关逻辑。
+  - 新增监听器解析器相关异常及服务异常映射支持。
 
 ### Bug 修复
 

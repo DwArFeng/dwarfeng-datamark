@@ -38,6 +38,10 @@ public final class ServiceExceptionHelper {
         map.put(AmbiguousDatamarkHandlerException.class, ServiceExceptionCodes.AMBIGUOUS_DATAMARK_HANDLER);
         map.put(NoDatamarkHandlerPresentException.class, ServiceExceptionCodes.NO_DATAMARK_HANDLER_PRESENT);
         map.put(DatamarkHandlerNotFoundException.class, ServiceExceptionCodes.DATAMARK_HANDLER_NOT_FOUND);
+        map.put(ListenerResolverException.class, ServiceExceptionCodes.LISTENER_RESOLVER_FAILED);
+        map.put(AmbiguousListenerResolverException.class, ServiceExceptionCodes.AMBIGUOUS_LISTENER_RESOLVER);
+        map.put(NoListenerResolverPresentException.class, ServiceExceptionCodes.NO_LISTENER_RESOLVER_PRESENT);
+        map.put(ListenerResolverNotFoundException.class, ServiceExceptionCodes.LISTENER_RESOLVER_NOT_FOUND);
 
         return map;
     }

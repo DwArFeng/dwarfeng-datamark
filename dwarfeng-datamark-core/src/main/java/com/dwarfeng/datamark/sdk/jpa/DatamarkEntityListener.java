@@ -1,6 +1,12 @@
 package com.dwarfeng.datamark.sdk.jpa;
 
+import com.dwarfeng.datamark.sdk.util.SystemPropertyConstants;
+import com.dwarfeng.datamark.stack.exception.AmbiguousListenerResolverException;
+import com.dwarfeng.datamark.stack.exception.ListenerResolverException;
+import com.dwarfeng.datamark.stack.exception.ListenerResolverNotFoundException;
 import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
+import com.dwarfeng.datamark.stack.resolve.ListenerResolveInfo;
+import com.dwarfeng.datamark.stack.resolve.ListenerResolver;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,13 +31,27 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class DatamarkEntityListener {
 
+    private static final String DEFAULT_LISTENER_RESOLVER_NAME = "datamarkHandlerResolver";
+
     private final Map<String, DatamarkHandler> datamarkHandlerMap;
+    private final Map<String, ListenerResolver> listenerResolverMap;
 
     private final Map<Class<?>, EntityInfo> entityFieldInfoMap = new HashMap<>();
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
+    private volatile ListenerResolver listenerResolver;
+    private volatile ListenerResolverException listenerResolverException;
+
     public DatamarkEntityListener(Map<String, DatamarkHandler> datamarkHandlerMap) {
+        this(datamarkHandlerMap, null);
+    }
+
+    public DatamarkEntityListener(
+            Map<String, DatamarkHandler> datamarkHandlerMap,
+            Map<String, ListenerResolver> listenerResolverMap
+    ) {
         this.datamarkHandlerMap = Optional.ofNullable(datamarkHandlerMap).orElse(Collections.emptyMap());
+        this.listenerResolverMap = Optional.ofNullable(listenerResolverMap).orElse(Collections.emptyMap());
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -92,7 +112,7 @@ public class DatamarkEntityListener {
         }
     }
 
-    private EntityInfo parseEntityInfo(Object entity) {
+    private EntityInfo parseEntityInfo(Object entity) throws Exception {
         // 如果 datamarkHandlerMap 为空映射，直接抛出异常。
         if (datamarkHandlerMap.isEmpty()) {
             throw new IllegalStateException("应用上下文中不存在任何 DatamarkHandler");
@@ -111,11 +131,17 @@ public class DatamarkEntityListener {
         return new EntityInfo(entityFieldInfos);
     }
 
-    private EntityFieldInfo parseEntityFieldInfo(Object entity, Field field) {
+    private EntityFieldInfo parseEntityFieldInfo(Object entity, Field field) throws Exception {
         DatamarkField datamarkField = field.getAnnotation(DatamarkField.class);
         // 在方法调用的时候，已经保证了 datamarkField 不会是 null。
         assert datamarkField != null;
-        String handlerName = datamarkField.handlerName();
+        String declaredHandlerName = datamarkField.handlerName();
+        String fieldName = field.getName();
+        String handlerName = getListenerResolver().resolve(
+                new ListenerResolveInfo(
+                        declaredHandlerName, entity.getClass(), fieldName, datamarkHandlerMap.keySet()
+                )
+        );
         // 解析 datamarkHandler。
         DatamarkHandler datamarkHandler;
         /*
@@ -127,7 +153,7 @@ public class DatamarkEntityListener {
             if (datamarkHandlerMap.size() == 1) {
                 datamarkHandler = datamarkHandlerMap.values().stream().findAny().get();
             } else {
-                String message = entity.getClass().getCanonicalName() + "." + field.getName() +
+                String message = entity.getClass().getCanonicalName() + "." + fieldName +
                         " 字段中 @DatamarkField 注解的 handlerName 未指定（或为空字符串）, " +
                         "但应用上下文中存在多个 DatamarkHandler";
                 throw new IllegalStateException(message);
@@ -142,16 +168,80 @@ public class DatamarkEntityListener {
             if (datamarkHandlerMap.containsKey(handlerName)) {
                 datamarkHandler = datamarkHandlerMap.get(handlerName);
             } else {
-                String message = entity.getClass().getCanonicalName() + "." + field.getName() +
-                        " 字段中 @DatamarkField 注解的 handlerName 为 " + handlerName +
+                String message = entity.getClass().getCanonicalName() + "." + fieldName +
+                        " 字段中 @DatamarkField 注解的 handlerName 为 " + declaredHandlerName +
+                        ", 解析器解析结果为 " + handlerName +
                         ", 但应用上下文中不存在对应的 DatamarkHandler";
                 throw new IllegalStateException(message);
             }
         }
-        // 解析 fieldName。
-        String fieldName = field.getName();
         // 构造结果并返回。
         return new EntityFieldInfo(datamarkHandler, fieldName);
+    }
+
+    private ListenerResolver getListenerResolver() throws ListenerResolverException {
+        lock.readLock().lock();
+        try {
+            if (Objects.nonNull(listenerResolver)) {
+                return listenerResolver;
+            }
+            if (Objects.nonNull(listenerResolverException)) {
+                throw listenerResolverException;
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        lock.writeLock().lock();
+        try {
+            if (Objects.nonNull(listenerResolver)) {
+                return listenerResolver;
+            }
+            if (Objects.nonNull(listenerResolverException)) {
+                throw listenerResolverException;
+            }
+            try {
+                listenerResolver = decideListenerResolver();
+                return listenerResolver;
+            } catch (ListenerResolverException e) {
+                listenerResolverException = e;
+                throw e;
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private ListenerResolver decideListenerResolver() throws ListenerResolverException {
+        String listenerResolverName = System.getProperty(SystemPropertyConstants.LISTENER_RESOLVER_BEAN_NAME);
+        /*
+         * 当系统属性指定了监听器解析器名称时：
+         * 1. 如果应用上下文中存在对应名称的监听器解析器，则使用该解析器。
+         * 2. 如果应用上下文中不存在对应名称的监听器解析器，则抛出异常。
+         */
+        if (StringUtils.isNotEmpty(listenerResolverName)) {
+            if (listenerResolverMap.containsKey(listenerResolverName)) {
+                return listenerResolverMap.get(listenerResolverName);
+            }
+            throw new ListenerResolverNotFoundException(listenerResolverName);
+        }
+        /*
+         * 当系统属性未指定监听器解析器名称时：
+         * 1. 如果应用上下文中有且仅有一个监听器解析器，则使用该解析器。
+         * 2. 如果应用上下文中没有监听器解析器，则使用本征监听器解析器。
+         * 3. 如果应用上下文中存在默认名称为 datamarkHandlerResolver 的监听器解析器，则使用该解析器。
+         * 4. 如果应用上下文中存在多个监听器解析器且无法决定默认解析器，则抛出异常。
+         */
+        if (listenerResolverMap.size() == 1) {
+            return listenerResolverMap.values().stream().findAny().get();
+        }
+        if (listenerResolverMap.isEmpty()) {
+            return DefaultListenerResolver.INSTANCE;
+        }
+        if (listenerResolverMap.containsKey(DEFAULT_LISTENER_RESOLVER_NAME)) {
+            return listenerResolverMap.get(DEFAULT_LISTENER_RESOLVER_NAME);
+        }
+        throw new AmbiguousListenerResolverException();
     }
 
     private static final class EntityInfo {
@@ -202,6 +292,22 @@ public class DatamarkEntityListener {
                     "datamarkHandler=" + datamarkHandler +
                     ", fieldName='" + fieldName + '\'' +
                     '}';
+        }
+    }
+
+    private static final class DefaultListenerResolver implements ListenerResolver {
+
+        private static final DefaultListenerResolver INSTANCE = new DefaultListenerResolver();
+
+        @Nonnull
+        @Override
+        public String resolve(@Nonnull ListenerResolveInfo info) {
+            return StringUtils.defaultString(info.getDeclaredHandlerName());
+        }
+
+        @Override
+        public String toString() {
+            return "DefaultListenerResolver{}";
         }
     }
 }

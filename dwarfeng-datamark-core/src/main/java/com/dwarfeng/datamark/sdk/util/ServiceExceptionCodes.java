@@ -34,6 +34,15 @@ public final class ServiceExceptionCodes {
     public static final ServiceException.Code DATAMARK_HANDLER_NOT_FOUND =
             new ServiceException.Code(offset(13), "datamark handler not found");
 
+    public static final ServiceException.Code LISTENER_RESOLVER_FAILED =
+            new ServiceException.Code(offset(20), "listener resolver failed");
+    public static final ServiceException.Code AMBIGUOUS_LISTENER_RESOLVER =
+            new ServiceException.Code(offset(21), "ambiguous listener resolver");
+    public static final ServiceException.Code NO_LISTENER_RESOLVER_PRESENT =
+            new ServiceException.Code(offset(22), "no listener resolver present");
+    public static final ServiceException.Code LISTENER_RESOLVER_NOT_FOUND =
+            new ServiceException.Code(offset(23), "listener resolver not found");
+
     private static int offset(int i) {
         return EXCEPTION_CODE_OFFSET + i;
     }
@@ -67,6 +76,10 @@ public final class ServiceExceptionCodes {
         AMBIGUOUS_DATAMARK_HANDLER.setCode(offset(11));
         NO_DATAMARK_HANDLER_PRESENT.setCode(offset(12));
         DATAMARK_HANDLER_NOT_FOUND.setCode(offset(13));
+        LISTENER_RESOLVER_FAILED.setCode(offset(20));
+        AMBIGUOUS_LISTENER_RESOLVER.setCode(offset(21));
+        NO_LISTENER_RESOLVER_PRESENT.setCode(offset(22));
+        LISTENER_RESOLVER_NOT_FOUND.setCode(offset(23));
     }
 
     private ServiceExceptionCodes() {
