@@ -22,9 +22,16 @@
     <!-- 省略其他配置... -->
     <dependencies>
         <!-- 省略其他配置... -->
+        <!-- 适用于仅需要 dwarfeng-datamark 核心能力的场景。 -->
         <dependency>
             <groupId>com.dwarfeng</groupId>
-            <artifactId>dwarfeng-datamark</artifactId>
+            <artifactId>dwarfeng-datamark-core</artifactId>
+            <version>${dwarfeng-datamark.version}</version>
+        </dependency>
+        <!-- 适用于需要与 spring-telqos 等项目集成能力的场景。 -->
+        <dependency>
+            <groupId>com.dwarfeng</groupId>
+            <artifactId>dwarfeng-datamark-api</artifactId>
             <version>${dwarfeng-datamark.version}</version>
         </dependency>
         <!-- 省略其他配置... -->
