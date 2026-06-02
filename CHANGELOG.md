@@ -8,7 +8,8 @@
 
 ### Bug 修复
 
-- (无)
+- 修正 `dwarfeng-datamark-api` 子模块部分 `properties` 文件错误的字符集。
+  - telqos/connection.properties。
 
 ### 功能移除
 
