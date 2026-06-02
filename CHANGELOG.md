@@ -4,6 +4,12 @@
 
 ### 功能构建
 
+- 项目结构优化。
+  - 将 `MultitonHandlerProcessExample` 移动至 `com.dwarfeng.datamark.node.example` 包下。
+  - 将 `MultitonQosProcessExample` 移动至 `com.dwarfeng.datamark.node.example` 包下。
+  - 将 `SingletonHandlerProcessExample` 移动至 `com.dwarfeng.datamark.node.example` 包下。
+  - 将 `SingletonQosProcessExample` 移动至 `com.dwarfeng.datamark.node.example` 包下。
+
 - 优化项目的 XSD 配置逻辑。
   - 将元素属性的默认值提升至 XSD 中进行定义，以简化代码实现。
   - 优化命名空间解析器工具类。

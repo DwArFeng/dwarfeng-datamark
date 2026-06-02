@@ -1,4 +1,4 @@
-package com.dwarfeng.datamark.example;
+package com.dwarfeng.datamark.node.example;
 
 import com.dwarfeng.datamark.stack.service.DatamarkQosService;
 import org.apache.commons.lang3.StringUtils;
@@ -10,18 +10,18 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * 单例模式 QoS 流程示例。
+ * 多例模式 QoS 流程示例。
  *
  * @author DwArFeng
  * @since 1.0.0
  */
-public class SingletonQosProcessExample {
+public class MultitonQosProcessExample {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SingletonQosProcessExample.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MultitonQosProcessExample.class);
 
     public static void main(String[] args) {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-                "classpath:spring/singleton/application-context*.xml"
+                "classpath:spring/multiton/application-context*.xml"
         );
         ctx.registerShutdownHook();
         ctx.start();
