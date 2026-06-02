@@ -4,7 +4,11 @@
 
 ### 功能构建
 
-- (无)
+- 优化项目的 XSD 配置逻辑。
+  - 将元素属性的默认值提升至 XSD 中进行定义，以简化代码实现。
+  - 优化命名空间解析器工具类。
+  - `com.dwarfeng.datamark.node.configuration.DatamarkHandlerDefinitionParser` 解析逻辑优化。
+  - `com.dwarfeng.datamark.node.configuration.DatamarkQosDefinitionParser` 解析逻辑优化。
 
 ### Bug 修复
 

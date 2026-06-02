@@ -28,10 +28,14 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:attribute name="handler-name" type="xsd:token" default="datamarkHandler">
+            <xsd:attribute
+                    name="handler-name"
+                    type="xsd:token"
+                    default="#{T(com.dwarfeng.datamark.sdk.util.Constants).XSD_DEFAULT_DATAMARK_HANDLER_NAME}"
+            >
                 <xsd:annotation>
                     <xsd:documentation>
-                        <![CDATA[数据标记服务的 bean 名称，默认是 datamarkHandler。]]>
+                        <![CDATA[数据标记处理器的 bean 名称，默认为 datamarkHandler。]]>
                     </xsd:documentation>
                     <xsd:appinfo>
                         <tool:annotation>
@@ -40,7 +44,11 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="resource-url" type="xsd:string">
+            <xsd:attribute
+                    name="resource-url"
+                    type="xsd:string"
+                    default="#{T(com.dwarfeng.datamark.stack.struct.DatamarkConfig$Builder).DEFAULT_RESOURCE_URL}"
+            >
                 <xsd:annotation>
                     <xsd:documentation>
                         <![CDATA[资源的地址，可以为 Spring 支持的任何资源。
@@ -53,7 +61,11 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="resource-charset" type="xsd:string">
+            <xsd:attribute
+                    name="resource-charset"
+                    type="xsd:string"
+                    default="#{T(com.dwarfeng.datamark.stack.struct.DatamarkConfig$Builder).DEFAULT_RESOURCE_CHARSET}"
+            >
                 <xsd:annotation>
                     <xsd:documentation>
                         <![CDATA[资源字符集，默认是 UTF-8，对于中文 windows 系统，可能需要把该值改成 GBK。]]>
@@ -65,7 +77,11 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="update-allowed" type="xsd:string">
+            <xsd:attribute
+                    name="update-allowed"
+                    type="xsd:string"
+                    default="#{T(com.dwarfeng.datamark.stack.struct.DatamarkConfig$Builder).DEFAULT_UPDATE_ALLOWED}"
+            >
                 <xsd:annotation>
                     <xsd:documentation>
                         <![CDATA[是否允许数据标记服务执行更新方法。
@@ -83,7 +99,9 @@
 
     <xsd:element name="qos">
         <xsd:annotation>
-            <xsd:documentation><![CDATA[通过该元素配置项目的数据标记 qos 服务。]]></xsd:documentation>
+            <xsd:documentation>
+                <![CDATA[通过该元素配置 DatamarkQosService。]]>
+            </xsd:documentation>
             <xsd:appinfo>
                 <tool:annotation>
                     <tool:exports type="com.dwarfeng.datamark.stack.handler.DatamarkQosHandler"/>
@@ -92,10 +110,14 @@
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:attribute name="handler-name" type="xsd:token" default="datamarkQosHandler">
+            <xsd:attribute
+                    name="qos-handler-name"
+                    type="xsd:token"
+                    default="#{T(com.dwarfeng.datamark.sdk.util.Constants).XSD_DEFAULT_DATAMARK_QOS_HANDLER_NAME}"
+            >
                 <xsd:annotation>
                     <xsd:documentation>
-                        <![CDATA[数据标记 QoS 服务的 bean 名称，默认是 datamarkQosHandler。]]>
+                        <![CDATA[DatamarkQosHandler 的 bean 名称，默认为 datamarkQosHandler。]]>
                     </xsd:documentation>
                     <xsd:appinfo>
                         <tool:annotation>
@@ -104,14 +126,34 @@
                     </xsd:appinfo>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="service-name" type="xsd:token" default="datamarkQosService">
+            <xsd:attribute
+                    name="qos-service-name"
+                    type="xsd:token"
+                    default="#{T(com.dwarfeng.datamark.sdk.util.Constants).XSD_DEFAULT_DATAMARK_QOS_SERVICE_NAME}"
+            >
                 <xsd:annotation>
                     <xsd:documentation>
-                        <![CDATA[数据标记 QoS 服务的 bean 名称，默认是 datamarkQosService。]]>
+                        <![CDATA[DatamarkQosService 的 bean 名称，默认为 datamarkQosService。]]>
                     </xsd:documentation>
                     <xsd:appinfo>
                         <tool:annotation>
                             <tool:expected-type type="java.lang.String"/>
+                        </tool:annotation>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute
+                    name="sem-ref"
+                    type="xsd:string"
+                    default="#{T(com.dwarfeng.datamark.sdk.util.Constants).XSD_DEFAULT_SERVICE_EXCEPTION_MAPPER_NAME}"
+            >
+                <xsd:annotation>
+                    <xsd:documentation>
+                        <![CDATA[ServiceExceptionMapper bean 引用，默认为 mapServiceExceptionMapper。]]>
+                    </xsd:documentation>
+                    <xsd:appinfo>
+                        <tool:annotation kind="ref">
+                            <tool:expected-type type="com.dwarfeng.subgrade.stack.exception.ServiceExceptionMapper"/>
                         </tool:annotation>
                     </xsd:appinfo>
                 </xsd:annotation>

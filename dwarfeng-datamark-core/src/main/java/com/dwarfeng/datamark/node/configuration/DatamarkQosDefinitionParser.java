@@ -2,11 +2,12 @@ package com.dwarfeng.datamark.node.configuration;
 
 import com.dwarfeng.datamark.impl.handler.DatamarkQosHandlerImpl;
 import com.dwarfeng.datamark.impl.service.DatamarkQosServiceImpl;
+import com.dwarfeng.datamark.sdk.util.BeanDefinitionParserUtil;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
@@ -23,31 +24,48 @@ public class DatamarkQosDefinitionParser implements BeanDefinitionParser {
 
     @Override
     public BeanDefinition parse(Element element, @Nonnull ParserContext parserContext) {
-        // 解析 handler-name 属性。
-        String handlerName = DefinitionParserUtil.mayResolvePlaceholder(
-                parserContext, element.getAttribute("handler-name")
+        String qosHandlerName = (String) BeanDefinitionParserUtil.mayResolveSpel(
+                parserContext, element.getAttribute("qos-handler-name")
         );
-        // 解析 service-name 属性。
-        String serviceName = DefinitionParserUtil.mayResolvePlaceholder(
-                parserContext, element.getAttribute("service-name")
+        String qosServiceName = (String) BeanDefinitionParserUtil.mayResolveSpel(
+                parserContext, element.getAttribute("qos-service-name")
         );
-        // 检查处理器名称是否重复。
-        DefinitionParserUtil.makeSureBeanNameNotDuplicated(parserContext, serviceName);
-        // 构造并注册 DatamarkQosHandler 的 BeanDefinition。
-        RootBeanDefinition datamarkQosHandlerBeanDefinition = new RootBeanDefinition(DatamarkQosHandlerImpl.class);
-        datamarkQosHandlerBeanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
-        datamarkQosHandlerBeanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
-        datamarkQosHandlerBeanDefinition.setLazyInit(true);
-        parserContext.getRegistry().registerBeanDefinition(handlerName, datamarkQosHandlerBeanDefinition);
-        // 构造并注册 DatamarkQosService 的 BeanDefinition。
-        RootBeanDefinition datamarkQosServiceBeanDefinition = new RootBeanDefinition(DatamarkQosServiceImpl.class);
-        datamarkQosServiceBeanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
-        datamarkQosServiceBeanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
-        datamarkQosServiceBeanDefinition.setLazyInit(true);
+        String semRef = (String) BeanDefinitionParserUtil.mayResolveSpel(
+                parserContext, element.getAttribute("sem-ref")
+        );
+
+        BeanDefinitionParserUtil.makeSureBeanNameNotDuplicated(parserContext, qosHandlerName);
+        BeanDefinitionParserUtil.makeSureBeanNameNotDuplicated(parserContext, qosServiceName);
+
+        BeanDefinitionBuilder datamarkQosHandlerBuilder = BeanDefinitionBuilder.rootBeanDefinition(
+                DatamarkQosHandlerImpl.class
+        );
+        datamarkQosHandlerBuilder.getRawBeanDefinition().setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
+        datamarkQosHandlerBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
+        datamarkQosHandlerBuilder.setLazyInit(false);
+        parserContext.getRegistry().registerBeanDefinition(
+                qosHandlerName, datamarkQosHandlerBuilder.getBeanDefinition()
+        );
+
+        BeanDefinitionBuilder datamarkQosServiceBuilder = BeanDefinitionBuilder.rootBeanDefinition(
+                DatamarkQosServiceImpl.class
+        );
+        datamarkQosServiceBuilder.getRawBeanDefinition().setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
         ConstructorArgumentValues datamarkQosServiceConstructorArgumentValues = new ConstructorArgumentValues();
-        datamarkQosServiceConstructorArgumentValues.addIndexedArgumentValue(0, new RuntimeBeanReference(handlerName));
-        datamarkQosServiceBeanDefinition.setConstructorArgumentValues(datamarkQosServiceConstructorArgumentValues);
-        parserContext.getRegistry().registerBeanDefinition(serviceName, datamarkQosServiceBeanDefinition);
+        datamarkQosServiceConstructorArgumentValues.addIndexedArgumentValue(
+                0, new RuntimeBeanReference(qosHandlerName)
+        );
+        datamarkQosServiceConstructorArgumentValues.addIndexedArgumentValue(
+                1, new RuntimeBeanReference(semRef)
+        );
+        datamarkQosServiceBuilder.getRawBeanDefinition().setConstructorArgumentValues(
+                datamarkQosServiceConstructorArgumentValues
+        );
+        datamarkQosServiceBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
+        datamarkQosServiceBuilder.setLazyInit(false);
+        parserContext.getRegistry().registerBeanDefinition(
+                qosServiceName, datamarkQosServiceBuilder.getBeanDefinition()
+        );
 
         return null;
     }

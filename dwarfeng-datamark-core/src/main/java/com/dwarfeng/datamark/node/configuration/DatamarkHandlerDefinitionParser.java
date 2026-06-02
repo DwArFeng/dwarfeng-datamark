@@ -1,12 +1,13 @@
 package com.dwarfeng.datamark.node.configuration;
 
 import com.dwarfeng.datamark.impl.handler.DatamarkHandlerImpl;
+import com.dwarfeng.datamark.sdk.util.BeanDefinitionParserUtil;
 import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -24,71 +25,70 @@ public class DatamarkHandlerDefinitionParser implements BeanDefinitionParser {
 
     @Override
     public BeanDefinition parse(Element element, @Nonnull ParserContext parserContext) {
-        // 解析 handler-name 属性。
-        String handlerName = DefinitionParserUtil.mayResolvePlaceholder(
-                parserContext, element.getAttribute("handler-name")
-        );
-        // 检查处理器名称是否重复。
-        DefinitionParserUtil.makeSureBeanNameNotDuplicated(parserContext, handlerName);
-        // 构造 DatamarkConfig.Builder 的 BeanDefinition。
+        /*
+         * 阶段1: 注册 DatamarkConfig 的内部 BeanDefinition。
+         */
         RootBeanDefinition datamarkConfigBuilderBeanDefinition = new RootBeanDefinition(DatamarkConfig.Builder.class);
-        // 解析 resource-url 属性，并视情况添加到 datamarkConfigBuilderBeanDefinition 的属性值中。
-        if (StringUtils.isNotEmpty(element.getAttribute("resource-url"))) {
-            datamarkConfigBuilderBeanDefinition.getPropertyValues().add(
-                    "resourceUrl",
-                    DefinitionParserUtil.mayResolvePlaceholder(
-                            parserContext, element.getAttribute("resource-url")
-                    )
-            );
-        }
-        // 解析 resource-charset 属性，并视情况添加到 datamarkConfigBuilderBeanDefinition 的属性值中。
-        if (StringUtils.isNotEmpty(element.getAttribute("resource-charset"))) {
-            datamarkConfigBuilderBeanDefinition.getPropertyValues().add(
-                    "resourceCharset",
-                    DefinitionParserUtil.mayResolvePlaceholder(
-                            parserContext, element.getAttribute("resource-charset")
-                    )
-            );
-        }
-        // 解析 update-allowed 属性，并视情况添加到 datamarkConfigBuilderBeanDefinition 的属性值中。
-        if (StringUtils.isNotEmpty(element.getAttribute("update-allowed"))) {
-            datamarkConfigBuilderBeanDefinition.getPropertyValues().add(
-                    "updateAllowed",
-                    DefinitionParserUtil.mayResolvePlaceholder(
-                            parserContext, element.getAttribute("update-allowed")
-                    )
-            );
-        }
-        // 注册 DatamarkConfig.Builder 的 BeanDefinition。
+        datamarkConfigBuilderBeanDefinition.getPropertyValues().addPropertyValue(
+                "resourceUrl",
+                BeanDefinitionParserUtil.mayResolvePlaceholder(
+                        parserContext, element.getAttribute("resource-url")
+                )
+        );
+        datamarkConfigBuilderBeanDefinition.getPropertyValues().addPropertyValue(
+                "resourceCharset",
+                BeanDefinitionParserUtil.mayResolvePlaceholder(
+                        parserContext, element.getAttribute("resource-charset")
+                )
+        );
+        datamarkConfigBuilderBeanDefinition.getPropertyValues().addPropertyValue(
+                "updateAllowed",
+                BeanDefinitionParserUtil.mayResolvePlaceholder(
+                        parserContext, element.getAttribute("update-allowed")
+                )
+        );
         datamarkConfigBuilderBeanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
-        datamarkConfigBuilderBeanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
         datamarkConfigBuilderBeanDefinition.setLazyInit(false);
-        String datamarkConfigBuilderBeanName = DefinitionParserUtil.getAvailableBeanName(
+        String datamarkConfigBuilderBeanName = BeanDefinitionParserUtil.parseAvailableBeanName(
                 parserContext, "datamarkConfigBuilder"
         );
         parserContext.getRegistry().registerBeanDefinition(
                 datamarkConfigBuilderBeanName, datamarkConfigBuilderBeanDefinition
         );
-        // 构造并注册 DatamarkConfig 的 BeanDefinition。
+
         RootBeanDefinition datamarkConfigBeanDefinition = new RootBeanDefinition(DatamarkConfig.class);
         datamarkConfigBeanDefinition.setFactoryBeanName(datamarkConfigBuilderBeanName);
         datamarkConfigBeanDefinition.setFactoryMethodName("build");
         datamarkConfigBeanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
-        datamarkConfigBeanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
         datamarkConfigBeanDefinition.setLazyInit(false);
-        String datamarkConfigBeanName = DefinitionParserUtil.getAvailableBeanName(parserContext, "datamarkConfig");
+        String datamarkConfigBeanName = BeanDefinitionParserUtil.parseAvailableBeanName(
+                parserContext, "datamarkConfig"
+        );
         parserContext.getRegistry().registerBeanDefinition(datamarkConfigBeanName, datamarkConfigBeanDefinition);
-        // 构造并注册 DatamarkHandler 的 BeanDefinition。
-        RootBeanDefinition datamarkHandlerBeanDefinition = new RootBeanDefinition(DatamarkHandlerImpl.class);
-        datamarkHandlerBeanDefinition.setScope(BeanDefinition.SCOPE_SINGLETON);
-        datamarkHandlerBeanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
-        datamarkHandlerBeanDefinition.setLazyInit(false);
+
+        String handlerName = (String) BeanDefinitionParserUtil.mayResolveSpel(
+                parserContext, element.getAttribute("handler-name")
+        );
+
+        BeanDefinitionParserUtil.makeSureBeanNameNotDuplicated(parserContext, handlerName);
+
+        /*
+         * 阶段2: 注册 DatamarkHandler 的 BeanDefinition。
+         */
+        BeanDefinitionBuilder datamarkHandlerBuilder = BeanDefinitionBuilder.rootBeanDefinition(
+                DatamarkHandlerImpl.class
+        );
+        datamarkHandlerBuilder.getRawBeanDefinition().setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
         ConstructorArgumentValues datamarkHandlerConstructorArgumentValues = new ConstructorArgumentValues();
         datamarkHandlerConstructorArgumentValues.addIndexedArgumentValue(
                 1, new RuntimeBeanReference(datamarkConfigBeanName)
         );
-        datamarkHandlerBeanDefinition.setConstructorArgumentValues(datamarkHandlerConstructorArgumentValues);
-        parserContext.getRegistry().registerBeanDefinition(handlerName, datamarkHandlerBeanDefinition);
+        datamarkHandlerBuilder.getRawBeanDefinition().setConstructorArgumentValues(
+                datamarkHandlerConstructorArgumentValues
+        );
+        datamarkHandlerBuilder.setScope(BeanDefinition.SCOPE_SINGLETON);
+        datamarkHandlerBuilder.setLazyInit(false);
+        parserContext.getRegistry().registerBeanDefinition(handlerName, datamarkHandlerBuilder.getBeanDefinition());
 
         return null;
     }
