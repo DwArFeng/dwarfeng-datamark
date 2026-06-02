@@ -1,11 +1,11 @@
 package com.dwarfeng.datamark.impl.handler;
 
+import com.dwarfeng.datamark.sdk.util.DatamarkQosExceptionHelper;
 import com.dwarfeng.datamark.stack.exception.AmbiguousDatamarkHandlerException;
 import com.dwarfeng.datamark.stack.exception.DatamarkHandlerNotFoundException;
 import com.dwarfeng.datamark.stack.exception.NoDatamarkHandlerPresentException;
 import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import com.dwarfeng.datamark.stack.handler.DatamarkQosHandler;
-import com.dwarfeng.subgrade.sdk.exception.HandlerExceptionHelper;
 import com.dwarfeng.subgrade.stack.exception.HandlerException;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,7 @@ public class DatamarkQosHandlerImpl implements DatamarkQosHandler {
             List<String> handlerNames = datamarkHandlerMap.keySet().stream().sorted().collect(Collectors.toList());
             return Collections.unmodifiableList(handlerNames);
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkQosExceptionHelper.parse(e);
         }
     }
 
@@ -40,7 +40,7 @@ public class DatamarkQosHandlerImpl implements DatamarkQosHandler {
         try {
             return determineHandler(handlerName).updateAllowed();
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkQosExceptionHelper.parse(e);
         }
     }
 
@@ -49,7 +49,7 @@ public class DatamarkQosHandlerImpl implements DatamarkQosHandler {
         try {
             return determineHandler(handlerName).get();
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkQosExceptionHelper.parse(e);
         }
     }
 
@@ -58,7 +58,7 @@ public class DatamarkQosHandlerImpl implements DatamarkQosHandler {
         try {
             return determineHandler(handlerName).refresh();
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkQosExceptionHelper.parse(e);
         }
     }
 
@@ -67,7 +67,7 @@ public class DatamarkQosHandlerImpl implements DatamarkQosHandler {
         try {
             return determineHandler(handlerName).update(datamarkValue);
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkQosExceptionHelper.parse(e);
         }
     }
 

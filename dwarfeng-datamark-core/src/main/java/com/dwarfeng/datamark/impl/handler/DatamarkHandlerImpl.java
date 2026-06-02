@@ -1,10 +1,10 @@
 package com.dwarfeng.datamark.impl.handler;
 
+import com.dwarfeng.datamark.sdk.util.DatamarkExceptionHelper;
 import com.dwarfeng.datamark.sdk.util.DatamarkValueUtil;
 import com.dwarfeng.datamark.stack.exception.*;
 import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
-import com.dwarfeng.subgrade.sdk.exception.HandlerExceptionHelper;
 import com.dwarfeng.subgrade.sdk.interceptor.analyse.BehaviorAnalyse;
 import com.dwarfeng.subgrade.stack.exception.HandlerException;
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +56,7 @@ public class DatamarkHandlerImpl implements DatamarkHandler {
                 return cachedDatamarkValue;
             }
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkExceptionHelper.parse(e);
         } finally {
             lock.readLock().unlock();
         }
@@ -68,7 +68,7 @@ public class DatamarkHandlerImpl implements DatamarkHandler {
             readAndUpdateCache();
             return cachedDatamarkValue;
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkExceptionHelper.parse(e);
         } finally {
             lock.writeLock().unlock();
         }
@@ -82,7 +82,7 @@ public class DatamarkHandlerImpl implements DatamarkHandler {
             readAndUpdateCache();
             return cachedDatamarkValue;
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkExceptionHelper.parse(e);
         } finally {
             lock.writeLock().unlock();
         }
@@ -96,7 +96,7 @@ public class DatamarkHandlerImpl implements DatamarkHandler {
             writeAndUpdateCache(datamarkValue);
             return cachedDatamarkValue;
         } catch (Exception e) {
-            throw HandlerExceptionHelper.parse(e);
+            throw DatamarkExceptionHelper.parse(e);
         } finally {
             lock.writeLock().unlock();
         }

@@ -4,6 +4,12 @@
 
 ### 功能构建
 
+- 项目异常机制优化。
+  - 新增 `com.dwarfeng.datamark.sdk.util.DatamarkExceptionHelper` 工具类。
+  - 新增 `com.dwarfeng.datamark.sdk.util.DatamarkQosExceptionHelper` 工具类。
+  - 优化 `com.dwarfeng.datamark.impl.handler.DatamarkHandlerImpl` 中的异常处理逻辑。
+  - 优化 `com.dwarfeng.datamark.impl.handler.DatamarkQosHandlerImpl` 中的异常处理逻辑。
+
 - 项目结构优化。
   - 将 `MultitonHandlerProcessExample` 移动至 `com.dwarfeng.datamark.node.example` 包下。
   - 将 `MultitonQosProcessExample` 移动至 `com.dwarfeng.datamark.node.example` 包下。
