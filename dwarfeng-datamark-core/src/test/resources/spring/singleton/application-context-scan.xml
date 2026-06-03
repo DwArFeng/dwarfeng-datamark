@@ -17,11 +17,7 @@
         />
         <context:include-filter
                 type="assignable"
-                expression="com.dwarfeng.datamark.node.configuration.SingletonHandlerConfiguration"
-        />
-        <context:include-filter
-                type="assignable"
-                expression="com.dwarfeng.datamark.node.configuration.SingletonQosConfiguration"
+                expression="com.dwarfeng.datamark.node.configuration.SingletonConfiguration"
         />
     </context:component-scan>
     <!--扫描 aop 增强所在的包。 -->

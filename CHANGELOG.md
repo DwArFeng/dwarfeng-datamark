@@ -4,6 +4,9 @@
 
 ### 功能构建
 
+- 项目单例配置优化。
+  - 新增 `com.dwarfeng.datamark.node.configuration.SingletonConfiguration`，实现完整的单例配置功能。
+
 - 项目异常机制优化。
   - 新增 `com.dwarfeng.datamark.sdk.util.DatamarkExceptionHelper` 工具类。
   - 新增 `com.dwarfeng.datamark.sdk.util.DatamarkQosExceptionHelper` 工具类。
