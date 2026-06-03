@@ -4,6 +4,11 @@
 
 ### 功能构建
 
+- 更新 README.md。
+
+- Wiki 更新。
+  - docs/wiki/zh-CN/Introduction.md。
+
 - 项目单例配置优化。
   - 新增 `com.dwarfeng.datamark.node.configuration.SingletonConfiguration`，实现完整的单例配置功能。
 
