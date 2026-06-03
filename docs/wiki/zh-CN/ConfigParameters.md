@@ -1,23 +1,27 @@
 # Config Parameters - 配置参数详解
 
 本文档详细说明了 dwarfeng-datamark 的配置参数，包括各配置项的含义、默认值、校验规则以及配置示例。
-配置参数通过 properties 文件或 Spring 占位符注入，最终构建为 `DatamarkConfig` 对象供 `DatamarkHandlerImpl` 使用。
+配置参数可以通过 properties 文件、Spring 占位符或 `dwarfeng-datamark` XML 命名空间注入，
+最终构建为 `DatamarkConfig` 对象供 `DatamarkHandlerImpl` 使用。
 
 ## 配置加载方式
 
 ### 单例模式
 
-使用 `SingletonHandlerConfiguration` 时，通过 Spring 的 `@Value` 注解从 properties 中读取配置。
+使用 `SingletonConfiguration` 时，通过 Spring 的 `@Value` 注解从 properties 中读取配置。
 需要确保 Spring 的 `property-placeholder` 已加载包含 `datamark.*` 前缀的配置文件。
 
-配置文件通常位于 `classpath:datamark/*.properties` 或通过 `file:conf/xxx/*.properties` 指定。
-本地文件可覆盖 classpath 中的配置。
+示例配置文件位于 `classpath:datamark/singleton/settings.properties`，
+本地覆盖文件通过 `file:conf/test.datamark/singleton/*.properties` 指定。
 
 ### 多实例模式
 
 使用 XML 或配置类手动创建多个 `DatamarkHandlerImpl` 实例时，通过占位符区分不同实例的配置。
 例如：`${datamark.instance1.resource_url}`、`${datamark.instance1.resource_charset}` 对应第一个实例，
 `${datamark.instance2.resource_url}`、`${datamark.instance2.resource_charset}` 对应第二个实例。
+
+示例配置文件位于 `classpath:datamark/multiton/settings.properties`，
+本地覆盖文件通过 `file:conf/test.datamark/multiton/*.properties` 指定。
 
 ## 基础资源参数
 
@@ -99,6 +103,46 @@ datamark.update_allowed=false
 
 在 properties 中对应配置 `datamark.instance1.resource_url`、`datamark.instance2.resource_url` 等。
 
+### XSD 配置模式
+
+在 Spring XML 中使用 `dwarfeng-datamark` 命名空间：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 以下注释用于抑制 idea 中 .md 的警告，实际并无错误，在使用时可以连同本注释一起删除。 -->
+<!--suppress SpringPlaceholdersInspection -->
+<beans
+        xmlns:datamark="http://dwarfeng.com/schema/dwarfeng-datamark"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.springframework.org/schema/beans"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://dwarfeng.com/schema/dwarfeng-datamark
+        http://dwarfeng.com/schema/dwarfeng-datamark/dwarfeng-datamark.xsd"
+>
+
+    <datamark:handler
+            handler-name="instance1"
+            resource-url="${datamark.instance1.resource_url}"
+            resource-charset="${datamark.instance1.resource_charset}"
+            update-allowed="${datamark.instance1.update_allowed}"
+    />
+    <datamark:handler
+            handler-name="instance2"
+            resource-url="${datamark.instance2.resource_url}"
+            resource-charset="${datamark.instance2.resource_charset}"
+            update-allowed="${datamark.instance2.update_allowed}"
+    />
+    <datamark:qos/>
+</beans>
+```
+
+`handler` 元素可通过 `handler-name`、`resource-url`、`resource-charset`、`update-allowed`
+指定处理器 bean 名称、资源地址、资源字符集和是否允许更新。
+
+`qos` 元素可通过 `qos-handler-name`、`qos-service-name`、`sem-ref`
+指定 QoS 处理器 bean 名称、QoS 服务 bean 名称和 `ServiceExceptionMapper` 引用。
+
 ## 参数校验规则
 
 配置在构建 `DatamarkConfig` 时会进行校验，校验逻辑由 `DatamarkConfigUtil` 实现。常见约束如下：
@@ -114,5 +158,4 @@ datamark.update_allowed=false
 ## 参阅
 
 - [Quick Start](./QuickStart.md) - 快速开始，用最少的步骤体验本项目。
-- [Resource Support](./ResourceSupport.md) - 资源支持说明，详细介绍了资源类型与配置方法。
 - [Usage Guide](./UsageGuide.md) - 使用指南，介绍了项目在工程中的配置、集成与运维方式。
