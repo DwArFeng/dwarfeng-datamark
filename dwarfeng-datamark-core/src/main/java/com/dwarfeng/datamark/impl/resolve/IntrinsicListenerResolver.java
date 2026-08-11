@@ -4,7 +4,7 @@ import com.dwarfeng.datamark.stack.resolve.ListenerResolveInfo;
 import com.dwarfeng.datamark.stack.resolve.ListenerResolver;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 本征监听器解析器。
@@ -16,10 +16,10 @@ public class IntrinsicListenerResolver implements ListenerResolver {
 
     public static final ListenerResolver INSTANCE = new IntrinsicListenerResolver();
 
-    @Nonnull
+    @NotNull
     @Override
-    public String resolve(@Nonnull ListenerResolveInfo info) {
-        return StringUtils.defaultString(info.getDeclaredHandlerName());
+    public String resolve(@NotNull ListenerResolveInfo info) {
+        return StringUtils.defaultString(info.declaredHandlerName());
     }
 
     @Override

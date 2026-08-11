@@ -6,15 +6,14 @@ import com.dwarfeng.datamark.stack.exception.DatamarkHandlerNotFoundException;
 import com.dwarfeng.datamark.stack.exception.NoDatamarkHandlerPresentException;
 import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import com.dwarfeng.datamark.stack.handler.DatamarkQosHandler;
-import com.dwarfeng.subgrade.stack.exception.HandlerException;
+import com.dwarfeng.subgrade.basic.stack.exception.HandlerException;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class DatamarkQosHandlerImpl implements DatamarkQosHandler {
@@ -28,8 +27,7 @@ public class DatamarkQosHandlerImpl implements DatamarkQosHandler {
     @Override
     public List<String> listHandlerNames() throws HandlerException {
         try {
-            List<String> handlerNames = datamarkHandlerMap.keySet().stream().sorted().collect(Collectors.toList());
-            return Collections.unmodifiableList(handlerNames);
+            return datamarkHandlerMap.keySet().stream().sorted().toList();
         } catch (Exception e) {
             throw DatamarkQosExceptionHelper.parse(e);
         }

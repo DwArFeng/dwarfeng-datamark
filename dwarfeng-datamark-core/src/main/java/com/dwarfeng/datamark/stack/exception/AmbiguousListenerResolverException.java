@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 监听器解析器模糊异常。
  *
@@ -8,6 +13,7 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class AmbiguousListenerResolverException extends ListenerResolverException {
 
+    @Serial
     private static final long serialVersionUID = -8172710700688166933L;
 
     public AmbiguousListenerResolverException() {
@@ -19,6 +25,6 @@ public class AmbiguousListenerResolverException extends ListenerResolverExceptio
 
     @Override
     public String getMessage() {
-        return "应用上下文中有多个监听器解析器, 但是无法决定默认解析器";
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_AMBIGUOUS_LISTENER_RESOLVER);
     }
 }

@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 没有监听器解析器异常。
  *
@@ -8,6 +13,7 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class NoListenerResolverPresentException extends ListenerResolverException {
 
+    @Serial
     private static final long serialVersionUID = -5027197018733321869L;
 
     public NoListenerResolverPresentException() {
@@ -19,6 +25,6 @@ public class NoListenerResolverPresentException extends ListenerResolverExceptio
 
     @Override
     public String getMessage() {
-        return "应用上下文中没有监听器解析器";
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_NO_LISTENER_RESOLVER_PRESENT);
     }
 }

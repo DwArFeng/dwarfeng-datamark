@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 非法的数据标记值异常。
  *
@@ -8,8 +13,9 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class IllegalDatamarkValueException extends DatamarkException {
 
+    @Serial
     private static final long serialVersionUID = 4692173951135125763L;
-
+    
     private final String illegalDatamark;
 
     public IllegalDatamarkValueException(String illegalDatamark) {
@@ -23,6 +29,6 @@ public class IllegalDatamarkValueException extends DatamarkException {
 
     @Override
     public String getMessage() {
-        return "非法的数据标记值: " + illegalDatamark;
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_ILLEGAL_DATAMARK_VALUE, illegalDatamark);
     }
 }

@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 资源读取失败异常。
  *
@@ -8,8 +13,9 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class ResourceReadFailedException extends DatamarkException {
 
+    @Serial
     private static final long serialVersionUID = 3198273518024052467L;
-
+    
     private final String resourceUrl;
 
     public ResourceReadFailedException(String resourceUrl) {
@@ -23,6 +29,6 @@ public class ResourceReadFailedException extends DatamarkException {
 
     @Override
     public String getMessage() {
-        return "资源读取失败: " + resourceUrl;
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_RESOURCE_READ_FAILED, resourceUrl);
     }
 }

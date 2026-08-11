@@ -3,6 +3,7 @@ package com.dwarfeng.datamark.node.configuration;
 import com.dwarfeng.datamark.impl.handler.DatamarkHandlerImpl;
 import com.dwarfeng.datamark.sdk.util.BeanDefinitionParserUtil;
 import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -13,8 +14,6 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
-import javax.annotation.Nonnull;
-
 /**
  * 数据标记处理器相关的 BeanDefinitionParser。
  *
@@ -24,7 +23,7 @@ import javax.annotation.Nonnull;
 public class DatamarkHandlerDefinitionParser implements BeanDefinitionParser {
 
     @Override
-    public BeanDefinition parse(Element element, @Nonnull ParserContext parserContext) {
+    public BeanDefinition parse(Element element, @NotNull ParserContext parserContext) {
         /*
          * 阶段1: 注册 DatamarkConfig 的内部 BeanDefinition。
          */

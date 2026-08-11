@@ -1,5 +1,8 @@
 package com.dwarfeng.datamark.stack.util;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
 import java.util.Objects;
 
 /**
@@ -17,7 +20,7 @@ public final class DatamarkConfigUtil {
      */
     public static void checkResourceUrl(String resourceUrl) {
         if (Objects.isNull(resourceUrl)) {
-            throw new NullPointerException("资源 URL 不能为 null");
+            throw new NullPointerException(CoreMessages.message(CoreMessageKey.CONFIG_RESOURCE_URL_NULL));
         }
     }
 
@@ -28,15 +31,15 @@ public final class DatamarkConfigUtil {
      */
     public static void checkResourceCharset(String resourceCharset) {
         if (Objects.isNull(resourceCharset)) {
-            throw new NullPointerException("资源字符集不能为 null");
+            throw new NullPointerException(CoreMessages.message(CoreMessageKey.CONFIG_RESOURCE_CHARSET_NULL));
         }
         if (resourceCharset.isEmpty()) {
-            throw new IllegalArgumentException("资源字符集不能为空字符串");
+            throw new IllegalArgumentException(CoreMessages.message(CoreMessageKey.CONFIG_RESOURCE_CHARSET_BLANK));
         }
         try {
             java.nio.charset.Charset.forName(resourceCharset);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("资源字符集不合法", e);
+            throw new IllegalArgumentException(CoreMessages.message(CoreMessageKey.CONFIG_RESOURCE_CHARSET_INVALID), e);
         }
     }
 

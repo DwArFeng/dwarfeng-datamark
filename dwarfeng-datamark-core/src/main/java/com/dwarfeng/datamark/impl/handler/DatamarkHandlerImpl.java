@@ -1,12 +1,14 @@
 package com.dwarfeng.datamark.impl.handler;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
 import com.dwarfeng.datamark.sdk.util.DatamarkExceptionHelper;
 import com.dwarfeng.datamark.sdk.util.DatamarkValueUtil;
 import com.dwarfeng.datamark.stack.exception.*;
 import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
-import com.dwarfeng.subgrade.sdk.interceptor.analyse.BehaviorAnalyse;
-import com.dwarfeng.subgrade.stack.exception.HandlerException;
+import com.dwarfeng.subgrade.aop.sdk.interceptor.analyse.BehaviorAnalyse;
+import com.dwarfeng.subgrade.basic.stack.exception.HandlerException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,76 +109,75 @@ public class DatamarkHandlerImpl implements DatamarkHandler {
     }
 
     // 为了代码的可阅读性，此处不做简化。
-    @SuppressWarnings({"ConstantValue", "LoggingSimilarMessage"})
+    @SuppressWarnings({"ConstantValue"})
     private void readAndUpdateCache() throws HandlerException {
-        LOGGER.debug("刷新并更新缓存...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_REFRESH_CACHE_START));
         String tempDatamark;
-        LOGGER.debug("读取资源中的内容...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_RESOURCE_READ));
         Resource resource = ctx.getResource(datamarkConfig.getResourceUrl());
         try (
                 InputStream in = resource.getInputStream();
                 Scanner scanner = new Scanner(in, datamarkConfig.getResourceCharset())
         ) {
             if (!scanner.hasNextLine()) {
-                LOGGER.debug("资源中没有下一行内容, 将 tempDatamark 设置为空字符串...");
+                LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_RESOURCE_EMPTY));
                 tempDatamark = StringUtils.EMPTY;
             } else {
-                LOGGER.debug("资源中有下一行内容, 将 tempDatamark 设置为下一行的内容...");
+                LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_RESOURCE_NON_EMPTY));
                 tempDatamark = scanner.nextLine();
             }
         } catch (Exception e) {
-            LOGGER.warn("刷新数据标记值时发生异常, 将清除缓存并抛出异常, 异常信息如下: ", e);
+            LOGGER.warn(CoreMessages.message(CoreMessageKey.HANDLER_REFRESH_FAILED), e);
             cachedDatamarkValue = null;
-            LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+            LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
             throw new ResourceReadFailedException(e, datamarkConfig.getResourceUrl());
         }
-        LOGGER.debug("校验 tempDatamark 内容...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_TEMP_DATAMARK_VALIDATE));
         if (!DatamarkValueUtil.isDatamarkValueValid(tempDatamark)) {
-            LOGGER.warn("数据标记值不合法, 将清除缓存并抛出异常");
+            LOGGER.warn(CoreMessages.message(CoreMessageKey.HANDLER_TEMP_DATAMARK_INVALID));
             cachedDatamarkValue = null;
-            LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+            LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
             throw new IllegalDatamarkValueException(tempDatamark);
         }
-        LOGGER.debug("更新缓存内容为 tempDatamark...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_UPDATE_FROM_TEMP));
         cachedDatamarkValue = tempDatamark;
-        LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
     }
 
-    @SuppressWarnings("LoggingSimilarMessage")
     private void writeAndUpdateCache(String datamark) throws HandlerException {
-        LOGGER.debug("写入并更新缓存...");
-        LOGGER.debug("确认服务允许更新...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_WRITE_CACHE_START));
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_UPDATE_ALLOWED_VALIDATE));
         if (!datamarkConfig.isUpdateAllowed()) {
-            LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+            LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
             throw new UpdateNotAllowedException();
         }
-        LOGGER.debug("校验 datamark 内容...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_DATAMARK_VALIDATE));
         if (!DatamarkValueUtil.isDatamarkValueValid(datamark)) {
-            LOGGER.warn("数据标记值不合法, 将抛出异常");
-            LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+            LOGGER.warn(CoreMessages.message(CoreMessageKey.HANDLER_DATAMARK_INVALID));
+            LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
             throw new IllegalDatamarkValueException(datamark);
         }
-        LOGGER.debug("验证资源是否可写...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_RESOURCE_WRITABLE_VALIDATE));
         Resource resource = ctx.getResource(datamarkConfig.getResourceUrl());
         if (!(resource instanceof WritableResource)) {
-            LOGGER.warn("资源不可写, 将抛出异常");
-            LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+            LOGGER.warn(CoreMessages.message(CoreMessageKey.HANDLER_RESOURCE_NOT_WRITABLE));
+            LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
             throw new ResourceNotWritableException(datamarkConfig.getResourceUrl());
         }
-        LOGGER.debug("向资源中写入内容...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_RESOURCE_WRITE));
         try (
                 OutputStream out = ((WritableResource) resource).getOutputStream();
                 PrintStream ps = new PrintStream(out, false, datamarkConfig.getResourceCharset())
         ) {
             ps.println(datamark);
         } catch (Exception e) {
-            LOGGER.warn("写入数据标记值时发生异常, 将抛出异常, 异常信息如下: ", e);
-            LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+            LOGGER.warn(CoreMessages.message(CoreMessageKey.HANDLER_WRITE_FAILED), e);
+            LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
             throw new ResourceWriteFailedException(e, datamarkConfig.getResourceUrl());
         }
-        LOGGER.debug("更新缓存内容为 datamark...");
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_UPDATE_FROM_DATAMARK));
         cachedDatamarkValue = datamark;
-        LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
+        LOGGER.debug(CoreMessages.message(CoreMessageKey.HANDLER_CACHE_CURRENT, cachedDatamarkValue));
     }
 
     @Override

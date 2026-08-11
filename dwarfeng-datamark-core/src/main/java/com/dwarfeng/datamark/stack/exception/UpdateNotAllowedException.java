@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 更新不允许异常。
  *
@@ -8,6 +13,7 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class UpdateNotAllowedException extends DatamarkException {
 
+    @Serial
     private static final long serialVersionUID = -7237699842091157838L;
 
     public UpdateNotAllowedException() {
@@ -19,6 +25,6 @@ public class UpdateNotAllowedException extends DatamarkException {
 
     @Override
     public String getMessage() {
-        return "更新不允许";
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_UPDATE_NOT_ALLOWED);
     }
 }

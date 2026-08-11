@@ -1,7 +1,7 @@
 package com.dwarfeng.datamark.node.example;
 
 import com.dwarfeng.datamark.stack.service.DatamarkQosService;
-import com.dwarfeng.dutil.basic.io.CT;
+import com.dwarfeng.dutil.basic.sdk.io.CT;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +20,9 @@ public class MultitonQosProcessExample {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultitonQosProcessExample.class);
 
-    public static void main(String[] args) {
+    static void main() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-                "classpath:spring/multiton/application-context*.xml"
+                "classpath:com/dwarfeng/datamark/node/spring/multiton/application-context*.xml"
         );
         ctx.registerShutdownHook();
         ctx.start();
@@ -47,7 +47,7 @@ public class MultitonQosProcessExample {
             CT.trace("可用的处理器名称:");
             for (int i = 0; i < handlerNames.size(); i++) {
                 String handlerName = handlerNames.get(i);
-                System.out.printf("  %3d: %s%n", i + 1, handlerName);
+                CT.trace(String.format("  %3d: %s", i + 1, handlerName));
             }
         } catch (Exception e) {
             LOGGER.warn("获取当前的数据标记值失败, 异常信息如下: ", e);

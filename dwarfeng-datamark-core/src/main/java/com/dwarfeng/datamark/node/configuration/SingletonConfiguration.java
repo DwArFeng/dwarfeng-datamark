@@ -7,7 +7,7 @@ import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import com.dwarfeng.datamark.stack.handler.DatamarkQosHandler;
 import com.dwarfeng.datamark.stack.service.DatamarkQosService;
 import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
-import com.dwarfeng.subgrade.stack.exception.ServiceExceptionMapper;
+import com.dwarfeng.subgrade.basic.stack.exception.ServiceExceptionMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;

@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 数据标记处理器模糊异常。
  *
@@ -8,6 +13,7 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class AmbiguousDatamarkHandlerException extends DatamarkQosException {
 
+    @Serial
     private static final long serialVersionUID = -9124859902405774433L;
 
     public AmbiguousDatamarkHandlerException() {
@@ -19,6 +25,6 @@ public class AmbiguousDatamarkHandlerException extends DatamarkQosException {
 
     @Override
     public String getMessage() {
-        return "应用上下文中有多个数据标记处理器, 但是没有指定 handlerName";
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_AMBIGUOUS_DATAMARK_HANDLER);
     }
 }

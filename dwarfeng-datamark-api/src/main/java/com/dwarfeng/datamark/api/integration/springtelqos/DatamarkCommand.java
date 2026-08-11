@@ -1,5 +1,7 @@
 package com.dwarfeng.datamark.api.integration.springtelqos;
 
+import com.dwarfeng.datamark.api.internal.i18n.ApiMessageKey;
+import com.dwarfeng.datamark.api.internal.i18n.ApiMessages;
 import com.dwarfeng.datamark.stack.service.DatamarkQosService;
 import com.dwarfeng.springtelqos.sdk.command.CliCommand;
 import com.dwarfeng.springtelqos.sdk.configuration.TelqosCommand;
@@ -10,8 +12,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class DatamarkCommand extends CliCommand {
 
     @Override
     protected DescriptionProvider provideDescriptionProvider() {
-        return ctx -> "数据标记服务";
+        return _ -> ApiMessages.message(ApiMessageKey.COMMAND_DESCRIPTION);
     }
 
     @Override
@@ -70,17 +72,24 @@ public class DatamarkCommand extends CliCommand {
     }
 
     private String cliSyntaxProvider(CommandDescriptor.Context context) throws Exception {
+        String handlerNamePlaceholder = ApiMessages.message(ApiMessageKey.COMMAND_HANDLER_NAME_PLACEHOLDER);
+        String datamarkValuePlaceholder = ApiMessages.message(ApiMessageKey.COMMAND_DATAMARK_VALUE_PLACEHOLDER);
         final String[] patterns = new String[]{
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_LIST_HANDLERS),
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE_ALLOWED) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name]",
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " " +
+                        handlerNamePlaceholder + "]",
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_GET) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name]",
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " " +
+                        handlerNamePlaceholder + "]",
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_REFRESH) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name]",
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " " +
+                        handlerNamePlaceholder + "]",
                 context.getRuntimeIdentity() + " " + CliCommandUtil.concatOptionPrefix(COMMAND_OPTION_UPDATE) +
-                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " handler-name] [" +
-                        CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_DATAMARK_VALUE) + " datamark-value]"
+                        " [" + CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_HANDLER_NAME) + " " +
+                        handlerNamePlaceholder + "] [" +
+                        CliCommandUtil.concatOptionPrefix(COMMAND_SUB_OPTION_DATAMARK_VALUE) + " " +
+                        datamarkValuePlaceholder + "]"
         };
         return CliCommandUtil.cliSyntax(patterns);
     }
@@ -90,22 +99,35 @@ public class DatamarkCommand extends CliCommand {
         List<Option> list = new ArrayList<>();
         list.add(
                 Option.builder(COMMAND_OPTION_LIST_HANDLERS).longOpt(COMMAND_OPTION_LIST_HANDLERS_LONG_OPT)
-                        .optionalArg(true).hasArg(false).desc("列出所有可用的数据标记处理器").build()
+                        .optionalArg(true).hasArg(false)
+                        .desc(ApiMessages.message(ApiMessageKey.COMMAND_LIST_HANDLERS_OPTION)).get()
         );
         list.add(
                 Option.builder(COMMAND_OPTION_UPDATE_ALLOWED).longOpt(COMMAND_OPTION_UPDATE_ALLOWED_LONG_OPT)
-                        .optionalArg(true).hasArg(false).desc("返回处理器是否允许更新").build()
+                        .optionalArg(true).hasArg(false)
+                        .desc(ApiMessages.message(ApiMessageKey.COMMAND_UPDATE_ALLOWED_OPTION)).get()
         );
-        list.add(Option.builder(COMMAND_OPTION_GET).optionalArg(true).hasArg(false).desc("获取数据标记值").build());
-        list.add(Option.builder(COMMAND_OPTION_REFRESH).optionalArg(true).hasArg(false).desc("刷新数据标记值").build());
-        list.add(Option.builder(COMMAND_OPTION_UPDATE).optionalArg(true).hasArg(false).desc("更新数据标记值").build());
+        list.add(
+                Option.builder(COMMAND_OPTION_GET).optionalArg(true).hasArg(false)
+                        .desc(ApiMessages.message(ApiMessageKey.COMMAND_GET_OPTION)).get()
+        );
+        list.add(
+                Option.builder(COMMAND_OPTION_REFRESH).optionalArg(true).hasArg(false)
+                        .desc(ApiMessages.message(ApiMessageKey.COMMAND_REFRESH_OPTION)).get()
+        );
+        list.add(
+                Option.builder(COMMAND_OPTION_UPDATE).optionalArg(true).hasArg(false)
+                        .desc(ApiMessages.message(ApiMessageKey.COMMAND_UPDATE_OPTION)).get()
+        );
         list.add(
                 Option.builder(COMMAND_SUB_OPTION_HANDLER_NAME).longOpt(COMMAND_SUB_OPTION_HANDLER_NAME_LONG_OPT)
-                        .hasArg(true).type(String.class).desc("处理器名称").build()
+                        .hasArg(true).type(String.class)
+                        .desc(ApiMessages.message(ApiMessageKey.COMMAND_HANDLER_NAME_OPTION)).get()
         );
         list.add(
                 Option.builder(COMMAND_SUB_OPTION_DATAMARK_VALUE).longOpt(COMMAND_SUB_OPTION_DATAMARK_VALUE_LONG_OPT)
-                        .hasArg(true).type(String.class).desc("数据标记值").build()
+                        .hasArg(true).type(String.class)
+                        .desc(ApiMessages.message(ApiMessageKey.COMMAND_DATAMARK_VALUE_OPTION)).get()
         );
         return list;
     }
@@ -135,7 +157,7 @@ public class DatamarkCommand extends CliCommand {
                 handleUpdate(context, cmd);
                 break;
             default:
-                throw new IllegalStateException("不应该执行到此处, 请联系开发人员");
+                throw new IllegalStateException(ApiMessages.message(ApiMessageKey.COMMAND_INTERNAL_ERROR));
         }
     }
 
@@ -147,13 +169,15 @@ public class DatamarkCommand extends CliCommand {
         List<String> handlerNames = datamarkQosService.listHandlerNames();
 
         // 输出结果。
-        context.sendMessage("可用的处理器名称: ");
+        context.sendMessage(ApiMessages.message(ApiMessageKey.COMMAND_AVAILABLE_HANDLERS));
         if (handlerNames.isEmpty()) {
-            context.sendMessage("  (Empty)");
+            context.sendMessage(ApiMessages.message(ApiMessageKey.COMMAND_EMPTY));
             return;
         }
         for (int i = 0; i < handlerNames.size(); i++) {
-            context.sendMessage(String.format("  %3d: %s", i + 1, handlerNames.get(i)));
+            context.sendMessage(ApiMessages.message(
+                    ApiMessageKey.COMMAND_HANDLER_ITEM, String.format("%3d", i + 1), handlerNames.get(i)
+            ));
         }
     }
 
@@ -165,9 +189,11 @@ public class DatamarkCommand extends CliCommand {
         boolean updateAllowed = datamarkQosService.updateAllowed(handlerName);
 
         // 输出结果。
-        context.sendMessage(
-                "处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 允许更新: " + updateAllowed
-        );
+        context.sendMessage(ApiMessages.message(
+                ApiMessageKey.COMMAND_UPDATE_ALLOWED_RESULT,
+                normalizeHandlerNameForOutput(handlerName),
+                updateAllowed
+        ));
     }
 
     private void handleGet(CommandExecutor.Context context, CommandLine cmd) throws Exception {
@@ -178,7 +204,9 @@ public class DatamarkCommand extends CliCommand {
         String datamark = datamarkQosService.get(handlerName);
 
         // 输出结果。
-        context.sendMessage("处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 数据标记值: " + datamark);
+        context.sendMessage(ApiMessages.message(
+                ApiMessageKey.COMMAND_GET_RESULT, normalizeHandlerNameForOutput(handlerName), datamark
+        ));
     }
 
     private void handleRefresh(CommandExecutor.Context context, CommandLine cmd) throws Exception {
@@ -189,10 +217,10 @@ public class DatamarkCommand extends CliCommand {
         String datamark = datamarkQosService.refresh(handlerName);
 
         // 输出结果。
-        context.sendMessage("刷新成功!");
-        context.sendMessage(
-                "处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 刷新后的数据标记值: " + datamark
-        );
+        context.sendMessage(ApiMessages.message(ApiMessageKey.COMMAND_REFRESH_SUCCESS));
+        context.sendMessage(ApiMessages.message(
+                ApiMessageKey.COMMAND_REFRESH_RESULT, normalizeHandlerNameForOutput(handlerName), datamark
+        ));
     }
 
     private void handleUpdate(CommandExecutor.Context context, CommandLine cmd) throws Exception {
@@ -204,10 +232,10 @@ public class DatamarkCommand extends CliCommand {
         datamark = datamarkQosService.update(handlerName, datamark);
 
         // 输出结果。
-        context.sendMessage("更新成功!");
-        context.sendMessage(
-                "处理器名称: " + normalizeHandlerNameForOutput(handlerName) + ", 更新的数据标记值: " + datamark
-        );
+        context.sendMessage(ApiMessages.message(ApiMessageKey.COMMAND_UPDATE_SUCCESS));
+        context.sendMessage(ApiMessages.message(
+                ApiMessageKey.COMMAND_UPDATE_RESULT, normalizeHandlerNameForOutput(handlerName), datamark
+        ));
     }
 
     private String parseHandlerName(CommandExecutor.Context context, CommandLine cmd) throws Exception {
@@ -223,28 +251,30 @@ public class DatamarkCommand extends CliCommand {
         }
 
         // 多处理器场景下，先输出处理器列表，再交互式输入。
-        context.sendMessage("可用的处理器名称: ");
+        context.sendMessage(ApiMessages.message(ApiMessageKey.COMMAND_AVAILABLE_HANDLERS));
         for (int i = 0; i < handlerNames.size(); i++) {
-            context.sendMessage(String.format("  %3d: %s", i + 1, handlerNames.get(i)));
+            context.sendMessage(ApiMessages.message(
+                    ApiMessageKey.COMMAND_HANDLER_ITEM, String.format("%3d", i + 1), handlerNames.get(i)
+            ));
         }
-        context.sendMessage("请输入处理器名称:");
+        context.sendMessage(ApiMessages.message(ApiMessageKey.COMMAND_HANDLER_NAME_PROMPT));
         return StringUtils.trimToNull(context.receiveMessage());
     }
 
     private String parseDatamarkValue(CommandExecutor.Context context, CommandLine cmd) throws Exception {
         if (cmd.hasOption(COMMAND_SUB_OPTION_DATAMARK_VALUE)) {
             String datamarkValue = StringUtils.trim(
-                    (String) cmd.getParsedOptionValue(COMMAND_SUB_OPTION_DATAMARK_VALUE)
+                    cmd.getParsedOptionValue(COMMAND_SUB_OPTION_DATAMARK_VALUE)
             );
             if (StringUtils.isNotEmpty(datamarkValue)) {
                 return datamarkValue;
             }
         }
-        context.sendMessage("请输入新的数据标记值:");
+        context.sendMessage(ApiMessages.message(ApiMessageKey.COMMAND_DATAMARK_VALUE_PROMPT));
         return context.receiveMessage();
     }
 
     private String normalizeHandlerNameForOutput(@Nullable String handlerName) {
-        return StringUtils.defaultIfBlank(handlerName, "<default>");
+        return StringUtils.defaultIfBlank(handlerName, ApiMessages.message(ApiMessageKey.COMMAND_DEFAULT_HANDLER));
     }
 }

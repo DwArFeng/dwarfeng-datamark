@@ -1,6 +1,8 @@
 package com.dwarfeng.datamark.stack.resolve;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+
 import java.util.Set;
 
 /**
@@ -12,18 +14,14 @@ import java.util.Set;
  * @author DwArFeng
  * @since 2.1.0
  */
-public class ListenerResolveInfo {
-
-    private final String declaredHandlerName;
-    private final Class<?> entityClass;
-    private final String fieldName;
-    private final Set<String> availableHandlerNames;
+public record ListenerResolveInfo(String declaredHandlerName, Class<?> entityClass, String fieldName,
+                                  Set<String> availableHandlerNames) {
 
     public ListenerResolveInfo(
-            @Nonnull String declaredHandlerName,
-            @Nonnull Class<?> entityClass,
-            @Nonnull String fieldName,
-            @Nonnull Set<String> availableHandlerNames
+            @NotNull String declaredHandlerName,
+            @NotNull Class<?> entityClass,
+            @NotNull String fieldName,
+            @NotNull Set<String> availableHandlerNames
     ) {
         this.declaredHandlerName = declaredHandlerName;
         this.entityClass = entityClass;
@@ -31,28 +29,32 @@ public class ListenerResolveInfo {
         this.availableHandlerNames = availableHandlerNames;
     }
 
-    @Nonnull
-    public String getDeclaredHandlerName() {
+    @Override
+    @NotNull
+    public String declaredHandlerName() {
         return declaredHandlerName;
     }
 
-    @Nonnull
-    public Class<?> getEntityClass() {
+    @Override
+    @NotNull
+    public Class<?> entityClass() {
         return entityClass;
     }
 
-    @Nonnull
-    public String getFieldName() {
+    @Override
+    @NotNull
+    public String fieldName() {
         return fieldName;
     }
 
-    @Nonnull
-    public Set<String> getAvailableHandlerNames() {
+    @Override
+    @NotNull
+    public Set<String> availableHandlerNames() {
         return availableHandlerNames;
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return "ListenerResolveInfo{" +
                 "declaredHandlerName='" + declaredHandlerName + '\'' +
                 ", entityClass=" + entityClass +

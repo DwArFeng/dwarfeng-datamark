@@ -9,47 +9,65 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>dwarfeng-datamark</artifactId>
         <groupId>com.dwarfeng</groupId>
+        <artifactId>dwarfeng-datamark</artifactId>
         <version>3.0.0.a-SNAPSHOT</version>
     </parent>
 
     <artifactId>dwarfeng-datamark-core</artifactId>
     <name>dwarfeng-datamark-core</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/DwArFeng/dwarfeng-datamark</url>
 
     <properties>
         <!-- 进行工程编码声明 -->
         <!-- 进行 JDK 版本声明 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>25</maven.compiler.release>
     </properties>
 
-    <!-- 实际使用的依赖列表 -->
     <dependencies>
-        <!-- Findbugs 组件 -->
+        <!-- JetBrains 静态注解 -->
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
+            <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-        </dependency>
-        <!-- Apache 工具组件 -->
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- 单元测试 -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- 日志处理 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- Jakarta Persistence -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+        <!-- Apache Commons 组件 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <!-- Spring -->
         <dependency>
@@ -58,34 +76,17 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
-        <!-- 日志处理 -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
+            <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <!-- Dutil 组件 -->
+        <!-- Dutil 工具库 -->
         <dependency>
             <groupId>com.dwarfeng</groupId>
             <artifactId>dutil-basic</artifactId>
@@ -93,47 +94,75 @@
         <!-- Subgrade 组件 -->
         <dependency>
             <groupId>com.dwarfeng</groupId>
-            <artifactId>subgrade-stack</artifactId>
+            <artifactId>subgrade-basic</artifactId>
         </dependency>
         <dependency>
             <groupId>com.dwarfeng</groupId>
-            <artifactId>subgrade-sdk</artifactId>
+            <artifactId>subgrade-aop</artifactId>
         </dependency>
+        <!-- 程序自身组件 -->
         <dependency>
             <groupId>com.dwarfeng</groupId>
-            <artifactId>subgrade-impl</artifactId>
-        </dependency>
-        <!-- Javassist 组件 -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </dependency>
-        <!-- Javax.persistence 组件 -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
+            <artifactId>dwarfeng-datamark-base</artifactId>
         </dependency>
     </dependencies>
 
     <build>
-        <!-- 实际使用的插件列表 -->
+        <!-- 插件列表 -->
         <plugins>
-            <!-- Maven 测试插件，用于跳过测试。 -->
+            <!-- Maven 清理插件，用于清理测试时留下的日志。 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>logs</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <!-- Maven 测试插件，用于选项式执行单元测试。 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>${project.surefire.skip}</skip>
+                    <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>
+            <!-- Maven 强制规则插件，用于检查构建环境。 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-build-baseline</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[25,26)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[3.9.16,)</version>
+                                </requireMavenVersion>
+                                <dependencyConvergence/>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-        <!-- 资源目录 -->
+        <!-- 配置资源目录 -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
-        <!-- 测试资源目录 -->
+        <!-- 配置测试资源目录 -->
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>

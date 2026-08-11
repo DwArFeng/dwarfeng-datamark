@@ -1,5 +1,7 @@
 package com.dwarfeng.datamark.sdk.util;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.expression.Expression;
@@ -74,7 +76,7 @@ public final class BeanDefinitionParserUtil {
      */
     public static void makeSureBeanNameNotDuplicated(ParserContext parserContext, String id) {
         if (parserContext.getRegistry().containsBeanDefinition(id)) {
-            throw new IllegalStateException("Duplicated spring bean id " + id);
+            throw new IllegalStateException(CoreMessages.message(CoreMessageKey.BEAN_DEFINITION_DUPLICATED, id));
         }
     }
 

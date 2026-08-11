@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 监听器解析器未找到异常。
  *
@@ -8,6 +13,7 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class ListenerResolverNotFoundException extends ListenerResolverException {
 
+    @Serial
     private static final long serialVersionUID = 1351851960937893752L;
 
     private final String listenerResolverName;
@@ -23,6 +29,6 @@ public class ListenerResolverNotFoundException extends ListenerResolverException
 
     @Override
     public String getMessage() {
-        return "应用上下文中没有找到名称为 " + listenerResolverName + " 的监听器解析器";
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_LISTENER_RESOLVER_NOT_FOUND, listenerResolverName);
     }
 }

@@ -2,7 +2,7 @@ package com.dwarfeng.datamark.stack.resolve;
 
 import com.dwarfeng.datamark.stack.exception.ListenerResolverException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 监听器解析器。
@@ -22,6 +22,6 @@ public interface ListenerResolver {
      * @return 解析得到的处理器名称。
      * @throws ListenerResolverException 解析过程中发生的异常。
      */
-    @Nonnull
-    String resolve(@Nonnull ListenerResolveInfo info) throws ListenerResolverException;
+    @NotNull
+    String resolve(@NotNull ListenerResolveInfo info) throws ListenerResolverException;
 }

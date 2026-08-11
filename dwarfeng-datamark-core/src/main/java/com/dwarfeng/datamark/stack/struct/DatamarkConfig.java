@@ -1,9 +1,9 @@
 package com.dwarfeng.datamark.stack.struct;
 
 import com.dwarfeng.datamark.stack.util.DatamarkConfigUtil;
-import com.dwarfeng.dutil.basic.prog.Buildable;
+import com.dwarfeng.dutil.basic.stack.builder.Buildable;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 数据标记配置。
@@ -11,6 +11,8 @@ import java.nio.charset.Charset;
  * @author DwArFeng
  * @since 1.0.0
  */
+// 该类为带有参数校验逻辑的配置类，不宜改写为 Record。
+@SuppressWarnings("ClassCanBeRecord")
 public class DatamarkConfig {
 
     private final String resourceUrl;
@@ -65,8 +67,9 @@ public class DatamarkConfig {
      */
     public static final class Builder implements Buildable<DatamarkConfig> {
 
-        public static final String DEFAULT_RESOURCE_URL = "classpath:datamark/default.storage";
-        public static final String DEFAULT_RESOURCE_CHARSET = Charset.defaultCharset().name();
+        public static final String DEFAULT_RESOURCE_URL =
+                "classpath:com/dwarfeng/datamark/node/datamark/default.storage";
+        public static final String DEFAULT_RESOURCE_CHARSET = StandardCharsets.UTF_8.name();
         public static final boolean DEFAULT_UPDATE_ALLOWED = false;
 
         private String resourceUrl = DEFAULT_RESOURCE_URL;

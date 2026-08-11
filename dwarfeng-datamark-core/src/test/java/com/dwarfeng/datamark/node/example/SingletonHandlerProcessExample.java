@@ -1,7 +1,7 @@
 package com.dwarfeng.datamark.node.example;
 
 import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
-import com.dwarfeng.dutil.basic.io.CT;
+import com.dwarfeng.dutil.basic.sdk.io.CT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -18,9 +18,9 @@ public class SingletonHandlerProcessExample {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SingletonHandlerProcessExample.class);
 
-    public static void main(String[] args) {
+    static void main() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-                "classpath:spring/singleton/application-context*.xml"
+                "classpath:com/dwarfeng/datamark/node/spring/singleton/application-context*.xml"
         );
         ctx.registerShutdownHook();
         ctx.start();

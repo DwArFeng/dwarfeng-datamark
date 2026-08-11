@@ -1,5 +1,7 @@
 package com.dwarfeng.datamark.sdk.jpa;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
 import com.dwarfeng.datamark.sdk.util.SystemPropertyConstants;
 import com.dwarfeng.datamark.stack.exception.AmbiguousListenerResolverException;
 import com.dwarfeng.datamark.stack.exception.ListenerResolverException;
@@ -7,12 +9,13 @@ import com.dwarfeng.datamark.stack.exception.ListenerResolverNotFoundException;
 import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import com.dwarfeng.datamark.stack.resolve.ListenerResolveInfo;
 import com.dwarfeng.datamark.stack.resolve.ListenerResolver;
-import org.apache.commons.beanutils.BeanUtilsBean;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
-import javax.annotation.Nonnull;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -103,19 +106,16 @@ public class DatamarkEntityListener {
     }
 
     private void updateDatamarkField(Object entity, EntityInfo entityInfo) throws Exception {
-        for (EntityFieldInfo fieldInfo : entityInfo.getFieldInfos()) {
-            BeanUtilsBean.getInstance().getPropertyUtils().setProperty(
-                    entity,
-                    fieldInfo.getFieldName(),
-                    fieldInfo.getDatamarkHandler().get()
-            );
+        BeanWrapper beanWrapper = new BeanWrapperImpl(entity);
+        for (EntityFieldInfo fieldInfo : entityInfo.fieldInfos()) {
+            beanWrapper.setPropertyValue(fieldInfo.fieldName(), fieldInfo.datamarkHandler().get());
         }
     }
 
     private EntityInfo parseEntityInfo(Object entity) throws Exception {
         // 如果 datamarkHandlerMap 为空映射，直接抛出异常。
         if (datamarkHandlerMap.isEmpty()) {
-            throw new IllegalStateException("应用上下文中不存在任何 DatamarkHandler");
+            throw new IllegalStateException(CoreMessages.message(CoreMessageKey.ENTITY_LISTENER_NO_HANDLER));
         }
 
         Field[] fields = entity.getClass().getDeclaredFields();
@@ -153,10 +153,10 @@ public class DatamarkEntityListener {
             if (datamarkHandlerMap.size() == 1) {
                 datamarkHandler = datamarkHandlerMap.values().stream().findAny().get();
             } else {
-                String message = entity.getClass().getCanonicalName() + "." + fieldName +
-                        " 字段中 @DatamarkField 注解的 handlerName 未指定（或为空字符串）, " +
-                        "但应用上下文中存在多个 DatamarkHandler";
-                throw new IllegalStateException(message);
+                throw new IllegalStateException(CoreMessages.message(
+                        CoreMessageKey.ENTITY_LISTENER_AMBIGUOUS_HANDLER,
+                        entity.getClass().getCanonicalName(), fieldName
+                ));
             }
         }
         /*
@@ -168,11 +168,10 @@ public class DatamarkEntityListener {
             if (datamarkHandlerMap.containsKey(handlerName)) {
                 datamarkHandler = datamarkHandlerMap.get(handlerName);
             } else {
-                String message = entity.getClass().getCanonicalName() + "." + fieldName +
-                        " 字段中 @DatamarkField 注解的 handlerName 为 " + declaredHandlerName +
-                        ", 解析器解析结果为 " + handlerName +
-                        ", 但应用上下文中不存在对应的 DatamarkHandler";
-                throw new IllegalStateException(message);
+                throw new IllegalStateException(CoreMessages.message(
+                        CoreMessageKey.ENTITY_LISTENER_HANDLER_NOT_FOUND,
+                        entity.getClass().getCanonicalName(), fieldName, declaredHandlerName, handlerName
+                ));
             }
         }
         // 构造结果并返回。
@@ -244,50 +243,38 @@ public class DatamarkEntityListener {
         throw new AmbiguousListenerResolverException();
     }
 
-    private static final class EntityInfo {
+    private record EntityInfo(List<EntityFieldInfo> fieldInfos) {
 
-        private final List<EntityFieldInfo> fieldInfos;
-
-        public EntityInfo(@Nonnull List<EntityFieldInfo> fieldInfos) {
+        private EntityInfo(@NotNull List<EntityFieldInfo> fieldInfos) {
             this.fieldInfos = fieldInfos;
         }
 
-        @Nonnull
-        public List<EntityFieldInfo> getFieldInfos() {
+        @Override
+        @NotNull
+        public List<EntityFieldInfo> fieldInfos() {
             return fieldInfos;
         }
 
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "EntityInfo{" +
                     "fieldInfos=" + fieldInfos +
                     '}';
         }
     }
 
-    private static final class EntityFieldInfo {
+    private record EntityFieldInfo(DatamarkHandler datamarkHandler, String fieldName) {
 
-        private final DatamarkHandler datamarkHandler;
-        private final String fieldName;
-
-        public EntityFieldInfo(
-                @Nonnull DatamarkHandler datamarkHandler,
-                @Nonnull String fieldName
+        private EntityFieldInfo(
+                @NotNull DatamarkHandler datamarkHandler,
+                @NotNull String fieldName
         ) {
             this.datamarkHandler = datamarkHandler;
             this.fieldName = fieldName;
         }
 
-        public DatamarkHandler getDatamarkHandler() {
-            return datamarkHandler;
-        }
-
-        public String getFieldName() {
-            return fieldName;
-        }
-
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return "EntityFieldInfo{" +
                     "datamarkHandler=" + datamarkHandler +
                     ", fieldName='" + fieldName + '\'' +
@@ -299,10 +286,10 @@ public class DatamarkEntityListener {
 
         private static final DefaultListenerResolver INSTANCE = new DefaultListenerResolver();
 
-        @Nonnull
+        @NotNull
         @Override
-        public String resolve(@Nonnull ListenerResolveInfo info) {
-            return StringUtils.defaultString(info.getDeclaredHandlerName());
+        public String resolve(@NotNull ListenerResolveInfo info) {
+            return StringUtils.defaultString(info.declaredHandlerName());
         }
 
         @Override

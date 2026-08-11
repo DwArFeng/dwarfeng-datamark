@@ -1,6 +1,6 @@
 package com.dwarfeng.datamark.stack.handler;
 
-import com.dwarfeng.subgrade.stack.exception.HandlerException;
+import com.dwarfeng.subgrade.basic.stack.exception.HandlerException;
 
 /**
  * 数据标记处理器。

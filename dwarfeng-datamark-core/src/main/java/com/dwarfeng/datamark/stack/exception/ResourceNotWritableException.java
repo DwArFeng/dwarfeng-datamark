@@ -1,5 +1,10 @@
 package com.dwarfeng.datamark.stack.exception;
 
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessageKey;
+import com.dwarfeng.datamark.core.internal.i18n.CoreMessages;
+
+import java.io.Serial;
+
 /**
  * 资源不可写异常。
  *
@@ -8,8 +13,9 @@ package com.dwarfeng.datamark.stack.exception;
  */
 public class ResourceNotWritableException extends DatamarkException {
 
+    @Serial
     private static final long serialVersionUID = 4529202425581281839L;
-
+    
     private final String resourceUrl;
 
     public ResourceNotWritableException(String resourceUrl) {
@@ -23,6 +29,6 @@ public class ResourceNotWritableException extends DatamarkException {
 
     @Override
     public String getMessage() {
-        return "资源不可写: " + resourceUrl;
+        return CoreMessages.message(CoreMessageKey.EXCEPTION_RESOURCE_NOT_WRITABLE, resourceUrl);
     }
 }

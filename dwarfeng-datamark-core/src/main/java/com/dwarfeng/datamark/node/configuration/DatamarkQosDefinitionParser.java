@@ -3,6 +3,7 @@ package com.dwarfeng.datamark.node.configuration;
 import com.dwarfeng.datamark.impl.handler.DatamarkQosHandlerImpl;
 import com.dwarfeng.datamark.impl.service.DatamarkQosServiceImpl;
 import com.dwarfeng.datamark.sdk.util.BeanDefinitionParserUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -11,8 +12,6 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
-
-import javax.annotation.Nonnull;
 
 /**
  * 数据标记 QoS 相关的 BeanDefinitionParser。
@@ -23,7 +22,7 @@ import javax.annotation.Nonnull;
 public class DatamarkQosDefinitionParser implements BeanDefinitionParser {
 
     @Override
-    public BeanDefinition parse(Element element, @Nonnull ParserContext parserContext) {
+    public BeanDefinition parse(Element element, @NotNull ParserContext parserContext) {
         String qosHandlerName = (String) BeanDefinitionParserUtil.mayResolveSpel(
                 parserContext, element.getAttribute("qos-handler-name")
         );
