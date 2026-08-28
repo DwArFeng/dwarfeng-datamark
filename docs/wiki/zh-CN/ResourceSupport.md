@@ -9,7 +9,7 @@ dwarfeng-datamark 项目支持多种类型的资源，资源的解析完全委�
 默认配置如下：
 
 ```java
-import com.dwarfeng.datamark.struct.DatamarkConfig;
+import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
 import com.dwarfeng.dutil.basic.prog.Buildable;
 
 import java.nio.charset.Charset;
@@ -93,7 +93,6 @@ datamark.resource_url=https://example.com/api/datamark
 
 - **FTP 资源**: `ftp://`。
 - **JAR 资源**: `jar:`。
-- **ZIP 资源**: `zip:`。
 - **自定义 ResourceLoader**: 通过 Spring 的 ResourceLoader 机制。
 
 ## 配置示例
@@ -130,10 +129,10 @@ datamark.instance3.update_allowed=true
 
 ### 读取权限
 
-所有 Spring Resource 都支持读取操作，项目通过以下方式读取数据：
+项目通过 Spring Resource 的 `getInputStream()` 方法读取数据：
 
 ```java
-import com.dwarfeng.datamark.struct.DatamarkConfig;
+import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -169,8 +168,8 @@ public class DatamarkReader {
 ```java
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
-import com.dwarfeng.datamark.struct.DatamarkConfig;
-import com.dwarfeng.datamark.exception.ResourceNotWritableException;
+import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
+import com.dwarfeng.datamark.stack.exception.ResourceNotWritableException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -215,7 +214,6 @@ public class DatamarkWriter {
 - 资源不存在。
 - 网络连接问题（对于网络资源）。
 - 权限不足。
-- 资源格式错误。
 
 ### ResourceNotWritableException
 
@@ -268,7 +266,7 @@ datamark.resource_charset=UTF-8
 项目通过 Spring 的 `ApplicationContext.getResource()` 方法获取资源：
 
 ```java
-import com.dwarfeng.datamark.struct.DatamarkConfig;
+import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -293,7 +291,5 @@ public class DatamarkResourceManager {
 
 1. **ResourceLoader 机制**: 支持自定义资源加载器。
 2. **协议扩展**: 支持添加新的资源协议。
-3. **缓存机制**: Spring 的资源缓存机制。
-4. **异常处理**: Spring 统一的异常处理机制。
 
 通过这种设计，dwarfeng-datamark 项目获得了与 Spring 框架完全一致的资源支持能力。

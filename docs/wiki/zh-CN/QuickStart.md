@@ -17,7 +17,7 @@
 ```xml
 <dependency>
     <groupId>com.dwarfeng</groupId>
-    <artifactId>dwarfeng-datamark</artifactId>
+    <artifactId>dwarfeng-datamark-core</artifactId>
     <version>${dwarfeng-datamark.version}</version>
 </dependency>
 ```
@@ -59,7 +59,7 @@ v1.0.0
 完成配置后，即可获取 `DatamarkHandler` 并进行基本操作。
 
 ```java
-import com.dwarfeng.datamark.handler.DatamarkHandler;
+import com.dwarfeng.datamark.stack.handler.DatamarkHandler;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @SuppressWarnings("UnnecessaryModifier")
@@ -123,8 +123,8 @@ public class QuickStartExample {
 
 如果您想直接体验项目中自带的示例，可以运行：
 
-- `com.dwarfeng.datamark.example.SingletonHandlerProcessExample`
-- `com.dwarfeng.datamark.example.SingletonQosProcessExample`
+- `com.dwarfeng.datamark.node.example.SingletonHandlerProcessExample`
+- `com.dwarfeng.datamark.node.example.SingletonQosProcessExample`
 
 这两个示例分别演示单例处理器流程与单例 QoS 流程。
 

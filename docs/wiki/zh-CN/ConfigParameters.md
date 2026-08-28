@@ -27,12 +27,14 @@
 
 ### datamark.resource_url
 
-数据标记资源的 URL，支持 Spring `Resource` 可解析的资源路径。类型：String，必填。
+数据标记资源的 URL，支持 Spring `Resource` 可解析的资源路径。
+类型：String。
 默认值：`classpath:datamark/default.storage`。
 
 ### datamark.resource_charset
 
-数据标记资源的字符集，用于读取与写入数据标记值。类型：String，必填。
+数据标记资源的字符集，用于读取与写入数据标记值。
+类型：String。
 默认值：`Charset.defaultCharset().name()`（常见为 UTF-8，具体取决于运行环境）。
 
 ## 更新控制参数

@@ -19,7 +19,7 @@
 
 <dependency>
     <groupId>com.dwarfeng</groupId>
-    <artifactId>dwarfeng-datamark</artifactId>
+    <artifactId>dwarfeng-datamark-core</artifactId>
     <version>${dwarfeng-datamark.version}</version>
 </dependency>
 ```
@@ -61,7 +61,7 @@
 
 QoS 服务的典型应用场景包括：
 
-- 通过 `spring-telqos` 提供的 `DatamarkCommand` 进行运维查询与更新。
+- 通过 `dwarfeng-datamark-api` 提供的 `DatamarkCommand`，结合 `spring-telqos` 进行运维查询与更新。
 
 ### 最小调用示例
 
@@ -136,18 +136,18 @@ public class UsageGuideQuickExample {
 
 ### datamark:qos
 
-`datamark:qos` 支持如下属性。
+`datamark:qos` 常用的 bean 名称属性如下。
 
-#### handler-name
+#### qos-handler-name
 
-- 属性名：`handler-name`。
+- 属性名：`qos-handler-name`。
 - 类型：`String`。
 - 默认值：`datamarkQosHandler`。
 - 说明：QoS handler 的 bean 名称。
 
-#### service-name
+#### qos-service-name
 
-- 属性名：`service-name`。
+- 属性名：`qos-service-name`。
 - 类型：`String`。
 - 默认值：`datamarkQosService`。
 - 说明：QoS service 的 bean 名称。
@@ -156,7 +156,8 @@ public class UsageGuideQuickExample {
 
 ### 单例模式
 
-单例模式下，应用上下文中只有一个 `DatamarkHandler`。可通过配置类扫描快速启用：
+单例模式下，应用上下文中只有一个 `DatamarkHandler`。应用上下文中已有 `ServiceExceptionMapper` 时，
+可通过配置类扫描快速启用：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -175,15 +176,7 @@ public class UsageGuideQuickExample {
     <context:component-scan base-package="com.dwarfeng.datamark.node.configuration" use-default-filters="false">
         <context:include-filter
                 type="assignable"
-                expression="com.dwarfeng.datamark.node.configuration.ServiceExceptionMapperConfiguration"
-        />
-        <context:include-filter
-                type="assignable"
-                expression="com.dwarfeng.datamark.node.configuration.SingletonHandlerConfiguration"
-        />
-        <context:include-filter
-                type="assignable"
-                expression="com.dwarfeng.datamark.node.configuration.SingletonQosConfiguration"
+                expression="com.dwarfeng.datamark.node.configuration.SingletonConfiguration"
         />
     </context:component-scan>
 </beans>

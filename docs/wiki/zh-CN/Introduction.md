@@ -17,17 +17,17 @@ Dwarfeng（赵扶风）的数据标记处理工具，基于 `subgrade` 底座开
 
 运行 `dwarfeng-datamark-core/src/test` 下的示例以观察核心特性。
 
-| 示例类名                                                              | 说明            |
-|-------------------------------------------------------------------|---------------|
-| com.dwarfeng.datamark.node.example.MultitonHandlerProcessExample  | 多例模式处理器流程示例   |
-| com.dwarfeng.datamark.node.example.MultitonQosProcessExample      | 多例模式 QoS 流程示例 |
-| com.dwarfeng.datamark.node.example.SingletonHandlerProcessExample | 单例模式处理器流程示例   |
-| com.dwarfeng.datamark.node.example.SingletonQosProcessExample     | 单例模式 QoS 流程示例 |
+| 示例类名                                                          | 说明                   |
+|-------------------------------------------------------------------|------------------------|
+| com.dwarfeng.datamark.node.example.MultitonHandlerProcessExample  | 多例模式处理器流程示例 |
+| com.dwarfeng.datamark.node.example.MultitonQosProcessExample      | 多例模式 QoS 流程示例  |
+| com.dwarfeng.datamark.node.example.SingletonHandlerProcessExample | 单例模式处理器流程示例 |
+| com.dwarfeng.datamark.node.example.SingletonQosProcessExample     | 单例模式 QoS 流程示例  |
 
 运行 `dwarfeng-datamark-api/src/test` 下的示例以观察 API 扩展特性。
 
-| 示例类名                                                        | 说明                                      |
-|-------------------------------------------------------------|-----------------------------------------|
+| 示例类名                                                    | 说明                                                   |
+|-------------------------------------------------------------|--------------------------------------------------------|
 | com.dwarfeng.datamark.api.integration.example.TelqosExample | Telqos 示例：通过 `datamark` 指令操作数据标记 QoS 服务 |
 
 ## 文档
