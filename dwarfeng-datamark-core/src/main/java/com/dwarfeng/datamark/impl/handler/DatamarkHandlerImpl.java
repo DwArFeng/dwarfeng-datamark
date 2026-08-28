@@ -107,7 +107,7 @@ public class DatamarkHandlerImpl implements DatamarkHandler {
     }
 
     // 为了代码的可阅读性，此处不做简化。
-    @SuppressWarnings("ConstantValue")
+    @SuppressWarnings({"ConstantValue", "LoggingSimilarMessage"})
     private void readAndUpdateCache() throws HandlerException {
         LOGGER.debug("刷新并更新缓存...");
         String tempDatamark;
@@ -142,6 +142,7 @@ public class DatamarkHandlerImpl implements DatamarkHandler {
         LOGGER.debug("最新缓存内容为: {}", cachedDatamarkValue);
     }
 
+    @SuppressWarnings("LoggingSimilarMessage")
     private void writeAndUpdateCache(String datamark) throws HandlerException {
         LOGGER.debug("写入并更新缓存...");
         LOGGER.debug("确认服务允许更新...");
