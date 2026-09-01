@@ -10,15 +10,16 @@ dwarfeng-datamark 项目支持多种类型的资源，资源的解析完全委�
 
 ```java
 import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
-import com.dwarfeng.dutil.basic.prog.Buildable;
+import com.dwarfeng.dutil.basic.stack.builder.Buildable;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public static final class Builder implements Buildable<DatamarkConfig> {
 
     // 默认资源 URL，使用 classpath 资源。
-    public static final String DEFAULT_RESOURCE_URL = "classpath:datamark/default.storage";
-    public static final String DEFAULT_RESOURCE_CHARSET = Charset.defaultCharset().name();
+    public static final String DEFAULT_RESOURCE_URL =
+            "classpath:com/dwarfeng/datamark/node/datamark/default.storage";
+    public static final String DEFAULT_RESOURCE_CHARSET = StandardCharsets.UTF_8.name();
     public static final boolean DEFAULT_UPDATE_ALLOWED = false;
 
     // ...
@@ -36,7 +37,7 @@ public static final class Builder implements Buildable<DatamarkConfig> {
 **示例**:
 
 ```properties
-datamark.resource_url=classpath:datamark/default.storage
+datamark.resource_url=classpath:com/dwarfeng/datamark/node/datamark/default.storage
 ```
 
 **特点**:
@@ -142,11 +143,9 @@ import java.util.Scanner;
 
 public class DatamarkReader {
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private ApplicationContext ctx;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private DatamarkConfig datamarkConfig;
 
@@ -175,11 +174,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class DatamarkWriter {
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private ApplicationContext ctx;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private DatamarkConfig datamarkConfig;
 
@@ -273,11 +270,9 @@ import org.springframework.core.io.Resource;
 
 public class DatamarkResourceManager {
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private ApplicationContext ctx;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private DatamarkConfig datamarkConfig;
 

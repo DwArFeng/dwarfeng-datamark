@@ -4,8 +4,8 @@
 
 ## 确认环境
 
-- JDK 1.8 或更高版本。
-- Maven 3.x。
+- JDK 25。
+- Maven 3.9.16 或更高版本。
 - 一个可被 Spring `Resource` 读取的资源。
 
 如果您希望在快速开始中直接体验“更新”功能，建议使用文件系统资源，并将 `update-allowed` 设置为 `true`。

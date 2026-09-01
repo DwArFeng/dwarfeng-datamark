@@ -12,7 +12,8 @@ Dwarfeng（赵扶风）的数据标记处理工具，基于 `subgrade` 底座开
 4. 提供标记刷新 API，可以重复读取 Spring Resource，并刷新数据标记。
 5. 提供标记更新 API，当 Spring Resource 支持写入时，可以更新数据标记。
 6. 支持通过 `DatamarkQosService` 在单处理器和多处理器场景中统一访问数据标记能力，并使用读写锁提高并发效率。
-7. 支持 Spring XML XSD 命名空间配置，以及通过 `@DatamarkField` 和 `DatamarkEntityListener` 在 JPA 实体持久化阶段自动写入数据标记。
+7. 支持 Spring XML XSD 命名空间配置，
+   以及通过 `@DatamarkField` 和 `DatamarkEntityListener` 在 JPA 实体持久化阶段自动写入数据标记。
 8. `dwarfeng-datamark-api` 模块提供 spring-telqos 运维指令示例。
 
 运行 `dwarfeng-datamark-core/src/test` 下的示例以观察核心特性。
@@ -28,7 +29,7 @@ Dwarfeng（赵扶风）的数据标记处理工具，基于 `subgrade` 底座开
 
 | 示例类名                                                    | 说明                                                   |
 |-------------------------------------------------------------|--------------------------------------------------------|
-| com.dwarfeng.datamark.api.integration.example.TelqosExample | Telqos 示例：通过 `datamark` 指令操作数据标记 QoS 服务 |
+| com.dwarfeng.datamark.api.example.TelqosExample             | Telqos 示例：通过 `datamark` 指令操作数据标记 QoS 服务 |
 
 ## 文档
 
@@ -101,8 +102,9 @@ wiki 为项目的开发人员为本项目编写的详细文档，包含不同语
 
 加载 `com.dwarfeng.datamark.node.configuration.SingletonConfiguration`，即可获得单例模式的 `DatamarkHandler`、
 `DatamarkQosHandler` 与
-`DatamarkQosService`。  
-在项目的 `application-context-scan.xml` 中追加 `com.dwarfeng.datamark.node.configuration` 包中相应 bean 的扫描，示例如下:
+`DatamarkQosService`。
+在项目的 `application-context-scan.xml` 中追加 `com.dwarfeng.datamark.node.configuration` 包中相应 bean 的扫描，
+示例如下:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -130,7 +132,7 @@ wiki 为项目的开发人员为本项目编写的详细文档，包含不同语
 
 ### 多实例模式
 
-不使用包扫描，使用 xml 或者配置类生成 `DatamarkHandlerImpl` 实例。  
+不使用包扫描，使用 xml 或者配置类生成 `DatamarkHandlerImpl` 实例。
 在项目的 `bean-definition.xml` 中追加配置，示例如下:
 
 ```xml
@@ -169,7 +171,7 @@ wiki 为项目的开发人员为本项目编写的详细文档，包含不同语
 
 ### XSD 配置
 
-可以使用 `dwarfeng-datamark` 命名空间装配 `DatamarkHandler`、`DatamarkQosHandler` 与 `DatamarkQosService`。  
+可以使用 `dwarfeng-datamark` 命名空间装配 `DatamarkHandler`、`DatamarkQosHandler` 与 `DatamarkQosService`。
 在项目的 `application-context-datamark.xml` 中追加配置，示例如下:
 
 ```xml

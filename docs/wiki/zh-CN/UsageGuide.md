@@ -117,14 +117,14 @@ public class UsageGuideQuickExample {
 
 - 属性名：`resource-url`。
 - 类型：`String`。
-- 默认值：`classpath:datamark/default.storage`（由默认构建器提供）。
+- 默认值：`classpath:com/dwarfeng/datamark/node/datamark/default.storage`（由默认构建器提供）。
 - 说明：Spring Resource 地址，可使用 `classpath:`、`file:` 等。
 
 #### resource-charset
 
 - 属性名：`resource-charset`。
 - 类型：`String`。
-- 默认值：平台默认字符集（由默认构建器提供）。
+- 默认值：`UTF-8`（由默认构建器提供）。
 - 说明：资源读取/写入字符集。建议显式指定为 `UTF-8`。
 
 #### update-allowed
@@ -249,11 +249,11 @@ public class UsageGuideQuickExample {
 import com.dwarfeng.datamark.sdk.jpa.DatamarkEntityListener;
 import com.dwarfeng.datamark.sdk.jpa.DatamarkField;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tbl_foobar_node")
@@ -379,7 +379,7 @@ OK
 ```properties
 #---------------------------------配置说明----------------------------------------
 # 数据标记资源的 URL，格式参考 Spring 资源路径。
-# datamark.xxx.resource_url=classpath:datamark/default.storage
+# datamark.xxx.resource_url=classpath:com/dwarfeng/datamark/node/datamark/default.storage
 # 数据标记资源的字符集。
 # datamark.xxx.resource_charset=UTF-8
 # 数据标记服务是否允许更新。

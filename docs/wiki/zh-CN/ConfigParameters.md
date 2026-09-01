@@ -11,7 +11,7 @@
 使用 `SingletonConfiguration` 时，通过 Spring 的 `@Value` 注解从 properties 中读取配置。
 需要确保 Spring 的 `property-placeholder` 已加载包含 `datamark.*` 前缀的配置文件。
 
-示例配置文件位于 `classpath:datamark/singleton/settings.properties`，
+示例配置文件位于 `classpath:com/dwarfeng/datamark/node/datamark/singleton/settings.properties`，
 本地覆盖文件通过 `file:conf/test.datamark/singleton/*.properties` 指定。
 
 ### 多实例模式
@@ -20,7 +20,7 @@
 例如：`${datamark.instance1.resource_url}`、`${datamark.instance1.resource_charset}` 对应第一个实例，
 `${datamark.instance2.resource_url}`、`${datamark.instance2.resource_charset}` 对应第二个实例。
 
-示例配置文件位于 `classpath:datamark/multiton/settings.properties`，
+示例配置文件位于 `classpath:com/dwarfeng/datamark/node/datamark/multiton/settings.properties`，
 本地覆盖文件通过 `file:conf/test.datamark/multiton/*.properties` 指定。
 
 ## 基础资源参数
@@ -29,13 +29,13 @@
 
 数据标记资源的 URL，支持 Spring `Resource` 可解析的资源路径。
 类型：String。
-默认值：`classpath:datamark/default.storage`。
+默认值：`classpath:com/dwarfeng/datamark/node/datamark/default.storage`。
 
 ### datamark.resource_charset
 
 数据标记资源的字符集，用于读取与写入数据标记值。
 类型：String。
-默认值：`Charset.defaultCharset().name()`（常见为 UTF-8，具体取决于运行环境）。
+默认值：`UTF-8`。
 
 ## 更新控制参数
 
@@ -51,7 +51,7 @@
 
 ```properties
 # 数据标记资源的 URL。
-datamark.resource_url=classpath:datamark/default.storage
+datamark.resource_url=classpath:com/dwarfeng/datamark/node/datamark/default.storage
 # 数据标记资源的字符集。
 datamark.resource_charset=UTF-8
 # 数据标记是否允许更新。
