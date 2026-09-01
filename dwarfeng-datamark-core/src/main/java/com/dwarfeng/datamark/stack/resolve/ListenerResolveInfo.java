@@ -1,7 +1,6 @@
 package com.dwarfeng.datamark.stack.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 
@@ -54,7 +53,7 @@ public record ListenerResolveInfo(String declaredHandlerName, Class<?> entityCla
     }
 
     @Override
-    public @NonNull String toString() {
+    public @NotNull String toString() {
         return "ListenerResolveInfo{" +
                 "declaredHandlerName='" + declaredHandlerName + '\'' +
                 ", entityClass=" + entityClass +

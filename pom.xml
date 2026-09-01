@@ -10,7 +10,7 @@
 
     <groupId>com.dwarfeng</groupId>
     <artifactId>dwarfeng-datamark</artifactId>
-    <version>3.0.0.a-SNAPSHOT</version>
+    <version>3.0.0.a</version>
 
     <packaging>pom</packaging>
 
@@ -27,13 +27,14 @@
         <!-- 集中定义依赖版本号 -->
         <jetbrains-annotations.version>26.1.0</jetbrains-annotations.version>
         <junit.version>6.1.2</junit.version>
-        <log4j2.version>2.26.1</log4j2.version>
         <slf4j.version>2.0.18</slf4j.version>
+        <log4j2.version>2.26.1</log4j2.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <spring.version>7.0.8</spring.version>
-        <dutil.version>2.0.0.a</dutil.version>
+        <aspectjweaver.version>1.9.25.1</aspectjweaver.version>
+        <dutil.version>2.0.1.a</dutil.version>
         <subgrade.version>2.0.0.a</subgrade.version>
         <spring-telqos.version>3.0.0.a</spring-telqos.version>
         <!-- Maven 插件版本声明 -->
@@ -69,16 +70,16 @@
             </dependency>
             <!-- 日志处理 -->
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-bom</artifactId>
                 <version>${log4j2.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
             </dependency>
             <!-- Jakarta Persistence -->
             <dependency>
@@ -104,6 +105,12 @@
                 <version>${spring.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- AspectJ 组件 -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectjweaver.version}</version>
             </dependency>
             <!-- Dutil 工具库 -->
             <dependency>

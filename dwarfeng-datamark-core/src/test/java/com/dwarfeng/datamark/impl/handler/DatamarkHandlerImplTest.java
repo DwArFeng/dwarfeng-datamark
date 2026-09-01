@@ -3,7 +3,7 @@ package com.dwarfeng.datamark.impl.handler;
 import com.dwarfeng.datamark.stack.exception.IllegalDatamarkValueException;
 import com.dwarfeng.datamark.stack.exception.UpdateNotAllowedException;
 import com.dwarfeng.datamark.stack.struct.DatamarkConfig;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.AbstractResource;
@@ -87,12 +87,12 @@ public class DatamarkHandlerImplTest {
         }
 
         @Override
-        public @NonNull InputStream getInputStream() {
+        public @NotNull InputStream getInputStream() {
             return new ByteArrayInputStream(content);
         }
 
         @Override
-        public @NonNull OutputStream getOutputStream() {
+        public @NotNull OutputStream getOutputStream() {
             return new ByteArrayOutputStream() {
                 @Override
                 public void close() throws IOException {
@@ -103,7 +103,7 @@ public class DatamarkHandlerImplTest {
         }
 
         @Override
-        public @NonNull String getDescription() {
+        public @NotNull String getDescription() {
             return RESOURCE_URL;
         }
 
