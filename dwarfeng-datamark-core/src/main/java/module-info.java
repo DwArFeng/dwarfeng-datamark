@@ -1,9 +1,9 @@
 module com.dwarfeng.datamark.core {
 
     requires com.dwarfeng.datamark.base;
-    requires transitive com.dwarfeng.dutil.basic;
+    requires com.dwarfeng.dutil.basic;
     requires com.dwarfeng.subgrade.aop;
-    requires transitive com.dwarfeng.subgrade.basic;
+    requires com.dwarfeng.subgrade.basic;
     requires jakarta.persistence;
     requires org.apache.commons.lang3;
     requires org.slf4j;
@@ -11,8 +11,8 @@ module com.dwarfeng.datamark.core {
     requires spring.context;
     requires spring.core;
     requires spring.expression;
-    requires static org.jetbrains.annotations;
-    requires transitive java.xml;
+    requires org.jetbrains.annotations;
+    requires java.xml;
 
     exports com.dwarfeng.datamark.impl.handler;
     exports com.dwarfeng.datamark.impl.resolve;

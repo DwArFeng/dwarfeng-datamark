@@ -4,6 +4,10 @@
 
 ### 功能构建
 
+- 优化 JPMS 依赖读取边界。
+  - dwarfeng-datamark-api。
+  - dwarfeng-datamark-core。
+
 - `dwarfeng-datamark-core` 子模块类优化注释、文档注释格式、代码换行格式。
   - com.dwarfeng.datamark.node.configuration.DatamarkHandlerDefinitionParser。
   - com.dwarfeng.datamark.stack.exception.DatamarkExceptionMessagesTest。
