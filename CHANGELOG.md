@@ -4,6 +4,10 @@
 
 ### 功能构建
 
+- `dwarfeng-datamark-core` 子模块类优化注释、文档注释格式、代码换行格式。
+  - com.dwarfeng.datamark.node.configuration.DatamarkHandlerDefinitionParser。
+  - com.dwarfeng.datamark.stack.exception.DatamarkExceptionMessagesTest。
+
 - 增加依赖。
   - 增加依赖 `micrometer` 以规避漏洞，版本为 `1.17.0`。
 

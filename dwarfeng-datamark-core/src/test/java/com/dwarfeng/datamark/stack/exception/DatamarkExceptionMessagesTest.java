@@ -37,7 +37,8 @@ public class DatamarkExceptionMessagesTest {
         return List.of(
                 new MessageCase(
                         AmbiguousDatamarkHandlerException::new,
-                        "Multiple datamark handlers exist in the application context, but no handler name was specified",
+                        "Multiple datamark handlers exist in the application context, " +
+                                "but no handler name was specified",
                         "应用上下文中有多个数据标记处理器, 但是没有指定 handlerName"
                 ),
                 new MessageCase(

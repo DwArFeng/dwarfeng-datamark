@@ -25,7 +25,7 @@ public class DatamarkHandlerDefinitionParser implements BeanDefinitionParser {
     @Override
     public BeanDefinition parse(Element element, @NotNull ParserContext parserContext) {
         /*
-         * 阶段1: 注册 DatamarkConfig 的内部 BeanDefinition。
+         * 阶段 1: 注册 DatamarkConfig 的内部 BeanDefinition。
          */
         RootBeanDefinition datamarkConfigBuilderBeanDefinition = new RootBeanDefinition(DatamarkConfig.Builder.class);
         datamarkConfigBuilderBeanDefinition.getPropertyValues().addPropertyValue(
@@ -72,7 +72,7 @@ public class DatamarkHandlerDefinitionParser implements BeanDefinitionParser {
         BeanDefinitionParserUtil.makeSureBeanNameNotDuplicated(parserContext, handlerName);
 
         /*
-         * 阶段2: 注册 DatamarkHandler 的 BeanDefinition。
+         * 阶段 2: 注册 DatamarkHandler 的 BeanDefinition。
          */
         BeanDefinitionBuilder datamarkHandlerBuilder = BeanDefinitionBuilder.rootBeanDefinition(
                 DatamarkHandlerImpl.class
