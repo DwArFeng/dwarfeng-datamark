@@ -4,7 +4,9 @@
 
 ### 功能构建
 
-- (无)
+- 优化 JPMS 依赖读取边界。
+  - dwarfeng-datamark-api。
+  - dwarfeng-datamark-core。
 
 ### Bug 修复
 

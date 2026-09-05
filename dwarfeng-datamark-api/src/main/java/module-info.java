@@ -5,7 +5,7 @@ module com.dwarfeng.datamark.api {
     requires com.dwarfeng.springtelqos.core;
     requires org.apache.commons.cli;
     requires org.apache.commons.lang3;
-    requires org.jetbrains.annotations;
+    requires static org.jetbrains.annotations;
 
     exports com.dwarfeng.datamark.api.integration.springtelqos;
 

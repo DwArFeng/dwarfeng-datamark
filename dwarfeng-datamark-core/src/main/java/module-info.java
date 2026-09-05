@@ -11,7 +11,7 @@ module com.dwarfeng.datamark.core {
     requires spring.context;
     requires spring.core;
     requires spring.expression;
-    requires org.jetbrains.annotations;
+    requires static org.jetbrains.annotations;
     requires java.xml;
 
     exports com.dwarfeng.datamark.impl.handler;
