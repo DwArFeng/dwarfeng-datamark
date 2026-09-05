@@ -4,6 +4,9 @@
 
 ### 功能构建
 
+- Wiki 更新。
+  - docs/wiki/zh-CN/VersionBlacklist.md。
+
 - 优化 JPMS 依赖读取边界。
   - dwarfeng-datamark-api。
   - dwarfeng-datamark-core。
