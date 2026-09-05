@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -49,6 +50,8 @@ public class DatamarkEntityListener {
         this(datamarkHandlerMap, null);
     }
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
     public DatamarkEntityListener(
             Map<String, DatamarkHandler> datamarkHandlerMap,
             Map<String, ListenerResolver> listenerResolverMap
