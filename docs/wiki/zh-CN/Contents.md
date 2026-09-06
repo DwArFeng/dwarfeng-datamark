@@ -29,3 +29,7 @@
 ## 配置
 
 - [Config Parameters](./ConfigParameters.md) - 配置参数详解，说明 DatamarkConfig 各配置项含义、默认值与校验规则。
+
+## API 参考
+
+- [Handler Reference](./HandlerReference.md) - 处理器 API 参考，说明读取、刷新、更新、缓存、QoS 路由、数据标记值校验与异常处理。
